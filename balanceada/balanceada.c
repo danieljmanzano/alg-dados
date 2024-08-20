@@ -11,15 +11,16 @@
 
 bool balanceada(char *sequencia){
     PILHA *pilha;
+    void *pont; //nao sei pra que serve esse ponteiro aqui, mas pro item_criar precisava de um ponteiro void ent criei um
     char letra;
     pilha = pilha_criar();
 
     letra = sequencia[0];
     while(letra != 0){
         if(letra == '(' || letra == '{' || letra == '['){
-            pilha_empilhar(pilha, item_criar(letra));
+            pilha_empilhar(pilha, item_criar(letra, pont));
         }else if((letra == ')' && !pilha_vazia(pilha)) || (letra == '}' && !pilha_vazia(pilha)) || (letra == ']' && !pilha_vazia(pilha))){
-            if((letra == ')' && item_get_chave(pilha_topo(pilha)) == '(') || (letra == '}' && item_get_chave(pilha_topo(pilha)) == '{') || (letra == ']' && item_get_chave(pilha_topo(pilha)) == '[')){
+            if((letra == ')' && (char)item_get_chave(pilha_topo(pilha)) == '(') || (letra == '}' && (char)item_get_chave(pilha_topo(pilha)) == '{') || (letra == ']' && (char)item_get_chave(pilha_topo(pilha)) == '[')){
                 pilha_desempilhar(pilha);
             }else return false;
         }else return false;
