@@ -34,6 +34,7 @@ void fila_apagar(FILA **f){
         return;
     }
 
+    item_apagar(&(*f)->inicio->item);
     free(fila_remover(*f)); //o fila_remover tira o item no inicio da fila e anda uma posição
     //só com essa linha de cima entao dou conta de tirar o que preciso e ir pra frente, aí só repetir até acabar
     fila_apagar(f);
