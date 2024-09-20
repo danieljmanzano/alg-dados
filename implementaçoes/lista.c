@@ -54,6 +54,7 @@ bool lista_inserir_fim(LISTA *lista, ITEM *item){  //essa nao ta no tad mas tenh
     aux->item = item;
     lista->fim->prox = aux;
     lista->fim = aux;
+    lista->tam++;
     return true;
 }
 
@@ -104,26 +105,27 @@ ITEM *lista_remover(LISTA *lista, int chave){
 
     if(lista->tam == 1 && chave == item_get_chave(lista->inicio->item)){ //tem que ter um caso pra 1 pq se nao eu acabo colocando o inicio onde nao devia
         ITEM *aux = lista->fim->item;
-        //free(lista->fim->item); //como aqui nao quero tirar o fim pra tras, só dou free na posição do item (o nó ainda tem que existir)
         lista->fim->item = NULL;
         lista->tam--;
         return aux;
     }
 
     if(chave == item_get_chave(lista->inicio->item)){ //faço essa pq ali no while eu pulo a primeira posição
-        NO *aux = lista->inicio;
-        //free(lista->inicio);
-        lista->inicio = aux->prox; //coloco o inicio 1 pra frente (tive que retirar o item dali, entao tenho que andar 1)
+        ITEM *aux = lista->inicio->item;
+        NO *auxno = lista->inicio;
+        lista->inicio = lista->inicio->prox; //coloco o inicio 1 pra frente (tive que retirar o item dali, entao tenho que andar 1)
+        free(auxno);
         lista->tam--;
-        return aux->item;
+        return aux;
     }
 
     NO *aux = lista->inicio;
     while(aux->prox != NULL){ //vou percorrer a lista atras da chave especifica
         if(item_get_chave(aux->prox->item) == chave){ //achei o item a ser removido
             ITEM *auxitem = aux->prox->item;
-            //free(aux->prox);
+            NO *auxno = aux->prox;
             aux->prox = aux->prox->prox; //pulo a posição que apaguei
+            free(auxno);
             lista->tam--;
             return auxitem;
         }
@@ -147,7 +149,7 @@ void lista_imprimir(LISTA *lista){
     if(lista == NULL) return;
 
     NO *aux = lista->inicio;
-    while(aux != NULL){
+    while(aux != NULL && aux->item != NULL){
         printf("%d ", item_get_chave(aux->item));
         aux = aux->prox;
     }

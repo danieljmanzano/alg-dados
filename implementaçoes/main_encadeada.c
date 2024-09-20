@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
 
     lista_imprimir(lista);
 
-    item = lista_remover(lista, 18); // remove no do meio da lista
+    item = lista_remover(lista, 3); // remove no do meio da lista
     item_apagar(&item); //apaga o item retornado. responsabilidade do chamado em vez de ser ser lista_remover(); decisão de projeto
     lista_imprimir(lista);
     
