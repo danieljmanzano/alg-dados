@@ -5,7 +5,6 @@
 #include "lista.h"
 
 //exercicio pra inserir itens ordenadamente numa lista sequencial
-//por algum motivo ta saindo ao contrario no runcodes (?)
 
 #ifndef STRUCTS_
     #define STRUCTS_
