@@ -6,7 +6,7 @@
 
 #define TAM_MAX 100 //nem sei o tamanho maximo, coloquei qqr coisa so pra funcionar a logica direito
 
-//tentando implementar uma lista encadeada
+//tentando implementar uma lista encadeada (do tipo simples)
 
 typedef struct node_{
     struct node_ *prox;
@@ -37,13 +37,17 @@ bool lista_apagar(LISTA **lista){
 
     NO *aux = (*lista)->inicio;
     while(aux->prox != NULL){
-        //free(aux->item);
-        //free(aux);
-        aux = aux->prox; //libera o nó em que eu to
+        ITEM *apaga = aux->item; //uso pra apagar o item do nó
+        NO *apaga2 = aux; //uso pra apagar o nó
+        aux = aux->prox; //vou pro proximo
+        free(apaga);
+        apaga = NULL;
+        free(apaga2);
+        apaga2 = NULL;
     }
 
-    (*lista)->inicio = NULL;
-    (*lista)->fim = NULL;
+    free(*lista);
+    (*lista) = NULL;
     return true;
 }
 
@@ -52,8 +56,8 @@ bool lista_inserir_fim(LISTA *lista, ITEM *item){  //essa nao ta no tad mas tenh
     if(aux == NULL) return false; //caso nao tenha alocado certo
 
     aux->item = item;
-    lista->fim->prox = aux;
-    lista->fim = aux;
+    lista->fim->prox = aux; 
+    lista->fim = aux; //fazer isso (junto da linha de cima) meio que conecta o aux na lista certin, aí acaba meus problema
     lista->tam++;
     return true;
 }
@@ -63,6 +67,7 @@ bool lista_ordenada_inserir(LISTA *lista, ITEM *item){ //mesmo caso da função 
 
     if(item_get_chave(item) < item_get_chave(aux->item)){ //pro caso de que preciso inserir logo no começo (no for embaixo eu pulo a primeira posição)
         aux = NULL; //tiro o aux do inicio só pra ter ctz que nao dá problema
+        aux = malloc(sizeof(NO));
         aux->prox = lista->inicio;
         aux->item = item;
         lista->inicio = aux;
@@ -141,11 +146,11 @@ bool lista_cheia(LISTA *lista){
 }
 
 bool lista_vazia(LISTA *lista){
-    if(lista->tam == 0 || lista == NULL) return true;
+    if(lista->tam == 0 || lista == NULL) return true; //mesma coisa de cima (se ta vazia ou ela nao existe)
     return false;
 }
 
-void lista_imprimir(LISTA *lista){
+void lista_imprimir(LISTA *lista){ //so o basico 
     if(lista == NULL) return;
 
     NO *aux = lista->inicio;
@@ -157,5 +162,8 @@ void lista_imprimir(LISTA *lista){
     return;
 }
 
-//compilar com o main_encadeada.c e o item.c junto pra teste
-//rodou mas tenho que dar um jeito nos free, tao tudo comentado pq eles tao dando errado (talves eu seja meio burro e nao sei dar free direito...)
+int lista_tamanho(LISTA *lista){
+    if(lista == NULL) return 0;
+    return lista->tam;
+}
+//ate entao nao achei nenhum erro aqui, daora
