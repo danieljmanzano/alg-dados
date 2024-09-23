@@ -7,7 +7,7 @@
 typedef struct item{
     void *chave;
     int num;
-    struct item *anterior; //o anterior aqui é o nó logo abaixo na pilha
+    struct item *anterior; //o anterior aqui é o nó logo abaixo na pilha (o item aqui é meio que um nó mesmo, bagulho estranho releve)
 }ITEM;
 
 typedef struct pilha{
@@ -35,14 +35,14 @@ void pilha_apagar(PILHA *p){
     }
 }
 
-void pilha_inserir(PILHA *p, ITEM *j){
+void pilha_inserir(PILHA *p, ITEM *i){ 
     if(p == NULL) return;
     if(p->topo == NULL){
-        j->anterior = NULL;
-        p->topo = j;
+        i->anterior = NULL;
+        p->topo = i;
     }else{
-        j->anterior = p->topo;
-        p->topo = j;
+        i->anterior = p->topo;
+        p->topo = i;
         p->tam++;
     }
     return;
@@ -87,3 +87,24 @@ void *item_pont(ITEM *item){
     return item->chave;
 }
 
+void pilha_imprimir(PILHA *pilha){
+    ITEM *aux = pilha->topo;
+    while(aux != NULL){
+        printf("%d ", aux->num);
+        aux = aux->anterior;
+    }
+    printf("\n");
+    return;
+}
+
+int pilha_tamanho(PILHA *p){
+    ITEM *aux = p->topo;
+    if(aux == NULL) return 0;
+
+    int i = 0;    
+    while(aux != NULL){
+        aux = aux->anterior;
+        i++;
+    }
+    return i;
+}
