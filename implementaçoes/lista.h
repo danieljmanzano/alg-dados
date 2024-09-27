@@ -19,8 +19,8 @@
 
 
 
-	/*Funções adicionais*/
-	int lista_inverter(LISTA **lista);
+	/*Funï¿½ï¿½es adicionais*/
+	bool lista_inverter(LISTA **lista);
 	bool lista_comparar(LISTA *l1, LISTA *l2);
 
 #endif

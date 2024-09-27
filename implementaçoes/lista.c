@@ -166,4 +166,29 @@ int lista_tamanho(LISTA *lista){
     if(lista == NULL) return 0;
     return lista->tam;
 }
+
+bool lista_inverter(LISTA **l){ //obs.: invertendo a lista quando ela é ordenada faz com que ela fique quase inutilizavel depois 
+    if(*l == NULL) return false;
+    
+    NO *aux0 = malloc(sizeof(NO)); //nao precisava de alocação mas eu tenho medo de deixar sem
+    NO *aux1 = malloc(sizeof(NO));
+    NO *aux2 = malloc(sizeof(NO));
+
+    aux0 = NULL; //aux0 é pra onde vou mandar os ponteiros invertidos (fica sempre atras do aux1)
+    aux1 = (*l)->inicio; //aux1 é o que vai ficar no nó onde os ponteiros vao mudar
+    aux2 = NULL; //aux2 é meu guia pra onde vou continuar andando (fica sempre depois do aux1 enquanto to andando)
+
+    while(aux1 != NULL){
+        aux2 = aux1->prox; //aux2 anda pra frente
+        aux1->prox = aux0; //prox do aux1 inverte (vai pro aux0 que ta atras dele)
+        aux0 = aux1; //aux0 anda pra frente
+        aux1 = aux2; //aux1 anda pra frente
+    }
+
+    (*l)->fim = (*l)->inicio; //no fim arrumo os fim e inicio
+    (*l)->inicio = aux0;
+    
+    return true;
+}
+
 //ate entao nao achei nenhum erro aqui, daora
