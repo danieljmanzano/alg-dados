@@ -40,6 +40,7 @@ void pilha_inserir(PILHA *p, ITEM *i){
     if(p->topo == NULL){
         i->anterior = NULL;
         p->topo = i;
+        p->tam++;
     }else{
         i->anterior = p->topo;
         p->topo = i;
