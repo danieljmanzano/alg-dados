@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <limits.h>
-#include "libs/brute.h"
-#include "libs/graph.h"
+#include "../libs/brute.h"
+#include "../libs/graph.h"
 
 //tentativa de fazer um algoritmo "otimizado" pra solucionar o problema do caixeiro viajante (nao vai ser otimizado nao, mas é pra ser menos pior que o força bruta) 
 /*tentando dar uma resumida: o distanciamin usa um algoritmo que me estima um valor minimo para a distancia entre duas cidades usando a primeira como base (só usa no começo do codigo)
@@ -17,10 +17,6 @@ o tsp só organiza o algoritmo do bagulho e chama as funçoes "em ordem" pra vol
 struct answer_ {
   int *path, minDistance;
 }; //peguei do tad mermo e qui si lasque. nao tinha uma funçao pra criar resposta entao tive que fazer aq (aí precisava acessar o tipo dele)
-
-int pa(double n){ //nao sei pra que serve mas usa na entrada, vou acreditar que funciona para algo
-    return ceil((n * (n + 1)) / 2); 
-}
 
 int distanciamin(Graph *graph, int numcidades){ //aqui vou calcular a distancia minima que duas cidades podem ter pra primeira vez que mudo de cidade
     int aux = 0, soma = 0; //o auxiliar vai pegar o menor valor da linha/coluna . a soma vou usar pra achar essa distancia minima aí
@@ -241,11 +237,12 @@ Answer tsp(Graph *graph, int numcidades, int primeira){
 
 int main(void){
 
-    int numcidades = 0, vert1 = 0, vert2 = 0, peso = 0, comeco = 0; //peguei do codigo do fernando. só pra pegar a entrada e arrumar o tad isso aq
+    int numcidades = 0, vert1 = 0, vert2 = 0, peso = 0, comeco = 0, vertices = 0; //peguei do codigo do fernando. só pra pegar a entrada e arrumar o tad isso aq
     scanf(" %d", &numcidades);
     scanf(" %d", &comeco);
-    Graph *graph = create_graph(numcidades, 0, 1);
-    for(int i = 0; i < pa(numcidades - 1); i++){
+    scanf(" %d", &vertices);
+    Graph *graph = createGraph(numcidades, 0, 1);
+    for(int i = 0; i < vertices; i++){
         scanf(" %d %d %d", &vert1, &vert2, &peso);
         insertEdge(graph, vert1, vert2, peso);
     }
