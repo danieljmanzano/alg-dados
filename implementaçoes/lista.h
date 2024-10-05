@@ -17,10 +17,9 @@
 	bool lista_cheia(LISTA *lista);
 	void lista_imprimir(LISTA *lista);
 
-
-
 	/*Fun��es adicionais*/
-	bool lista_inverter(LISTA **lista);
+	bool lista_inverter(LISTA *lista);
+	bool lista_inverter_recursiva(LISTA *lista);
 	bool lista_comparar(LISTA *l1, LISTA *l2);
 
 #endif

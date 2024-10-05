@@ -167,15 +167,15 @@ int lista_tamanho(LISTA *lista){
     return lista->tam;
 }
 
-bool lista_inverter(LISTA **l){ //obs.: invertendo a lista quando ela é ordenada faz com que ela fique quase inutilizavel depois 
-    if(*l == NULL) return false;
+bool lista_inverter(LISTA *l){ //obs.: invertendo a lista quando ela é ordenada faz com que ela fique quase inutilizavel depois 
+    if(l == NULL) return false;
     
     NO *aux0 = malloc(sizeof(NO)); //nao precisava de alocação mas eu tenho medo de deixar sem
     NO *aux1 = malloc(sizeof(NO));
     NO *aux2 = malloc(sizeof(NO));
 
     aux0 = NULL; //aux0 é pra onde vou mandar os ponteiros invertidos (fica sempre atras do aux1)
-    aux1 = (*l)->inicio; //aux1 é o que vai ficar no nó onde os ponteiros vao mudar
+    aux1 = l->inicio; //aux1 é o que vai ficar no nó onde os ponteiros vao mudar
     aux2 = NULL; //aux2 é meu guia pra onde vou continuar andando (fica sempre depois do aux1 enquanto to andando)
 
     while(aux1 != NULL){
@@ -185,9 +185,31 @@ bool lista_inverter(LISTA **l){ //obs.: invertendo a lista quando ela é ordenad
         aux1 = aux2; //aux1 anda pra frente
     }
 
-    (*l)->fim = (*l)->inicio; //no fim arrumo os fim e inicio
-    (*l)->inicio = aux0;
+    l->fim = l->inicio; //no fim arrumo os fim e inicio
+    l->inicio = aux0;
     
+    return true;
+}
+
+void inversaorecursiva(NO *no){ //extra: funçao recursiva de inverter
+    if(no == NULL || no->prox == NULL) return; //caso base pra se chegar no fim/começo da lista ou se ela nao existir/tem tamanho 1
+
+    inversaorecursiva(no->prox); //chamo o prox no 
+
+    no->prox->prox = no; //o prox do prox do meu no atual aponta pro no atual (supoe 1->2, vai ser 2-> = ->1 e 1-> = NULL. termina em 2->1)
+    no->prox = NULL;
+    return; 
+}
+
+bool lista_inverter_recursiva(LISTA *l){ //tive que criar essas funçao separada pq tenho que alterar o l->fim e l->inicio depois da recursão
+    if(l == NULL) return false;
+    NO *no = l->inicio, *antigofim = l->fim, *antigoinicio = l->inicio;
+
+    inversaorecursiva(no);
+    l->fim = antigoinicio;
+    l->fim->prox = NULL;
+    l->inicio = antigofim;
+
     return true;
 }
 
