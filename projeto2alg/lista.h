@@ -9,9 +9,9 @@
 
     /*operaçoes de TAD*/
     LISTA *lista_criar();
-    bool lista_apagar(LISTA **lista);
+    void lista_apagar(LISTA **lista);
     bool lista_inserir(LISTA *lista, int chave);
-    int lista_remover(LISTA *lista, int chave);
+    bool lista_remover(LISTA *lista, int chave);
     void lista_imprimir(LISTA *lista);
 
     /*operaçoes de conjunto*/
