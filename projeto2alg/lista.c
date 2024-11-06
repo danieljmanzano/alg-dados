@@ -7,7 +7,7 @@ struct lista_{
     int tam;
 };
 
-int buscabin(LISTA *l, int i, int f, int busca, int *achou);
+int buscabin(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa no .h, então faço o protótipo aqui mesmo
 
 LISTA *lista_criar(){
     LISTA *l = malloc(sizeof(LISTA));
@@ -110,14 +110,14 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
     if(uniao == NULL) return NULL;
 
     int i = 0, j = 0, cont = 0;
-    while(i < l1->tam && j < l2->tam){ //pego sempre o menor numero dos dois vetores a cada iteração e avanço posição no de onde peguei
+    while(i < l1->tam && j < l2->tam){ //pego sempre o menor numero das duas listas a cada iteração e avanço posição no de onde peguei
         if(*(l1->lista[i]) < *(l2->lista[j])) 
             uniao->lista[cont++] = l1->lista[i++];
             
         else if(*(l1->lista[i]) > *(l2->lista[j]))
             uniao->lista[cont++] = l2->lista[j++];
 
-        else{ //aqui, caso os numeros sejam iguais, adiciono só uma vez
+        else{ //aqui, caso os numeros sejam iguais, adiciono só uma vez (e avanço as duas listas)
             uniao->lista[cont++] = l1->lista[i];
             i++;
             j++;
