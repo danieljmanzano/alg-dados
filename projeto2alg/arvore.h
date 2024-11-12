@@ -3,6 +3,8 @@
     #define TAM_MAX 200
     #define ERRO -8763521
 
+    #include <stdbool.h>
+
     typedef struct arvore_ ARVORE;
 
     /*operaçoes de TAD*/
