@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lista.h"
+#include "set.h"
 
 //segundo projeto de alg
 //ate o momento so fiz a a parte da lista sequencial
