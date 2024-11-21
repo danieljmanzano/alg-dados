@@ -6,7 +6,6 @@
     #include <stdbool.h>
 
     typedef struct set_ SET;
-    /*nao sei o que fazer aqui rsrsrs*/
 
     /*operaçoes de TAD*/
     SET *set_criar();

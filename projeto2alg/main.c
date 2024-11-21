@@ -3,7 +3,7 @@
 #include "set.h"
 
 //segundo projeto de alg
-//ate o momento so fiz a a parte da lista sequencial
+//main feita pelo rudinei
 
 /*Implementar o TAD Conjunto de modo que o usuário possa escolher entre 2 a
 Estruturas de Dados que implementam o conjunto. Ou seja, o TAD Conjunto deve ser
@@ -21,26 +21,26 @@ que essas 2 útlimas operações recebem como entrada 2 conjuntos e devolvem um
 terceiro conjunto como resposta.*/
 
 int main(void){ 
-    LISTA *A, *B;
+    SET *A, *B;
     int n_a, n_b, x;
     int op;
     int tipo;
 
     scanf("%d", &tipo); //isso aqui é pra decidir o TAD mas como to so testando lista nao muda nada ainda
 
-    A = lista_criar();
-    B = lista_criar();
+    A = set_criar(tipo);
+    B = set_criar(tipo);
 
     scanf("%d %d", &n_a, &n_b);
 
     for(int i = 0; i < n_a; i++){
         scanf("%d", &x);
-        lista_inserir(A, x);
+        set_inserir(A, x);
     }
 
     for(int i = 0; i < n_b; i++){
         scanf("%d", &x);
-        lista_inserir(B, x);
+        set_inserir(B, x);
     }
 
     scanf("%d", &op);
@@ -49,30 +49,35 @@ int main(void){
     if(op == 1){ //pertence
         int chave;
         scanf("%d", &chave);
-        if(lista_pertence(A, chave)) //lembrando que o pertence é pra analisar na primeira lista sempre
+        if(set_pertence(A, chave)) 
             printf("Pertence\n");
         else
             printf("Nao pertence\n");
 
     }else if(op == 2){ //uniao
-        LISTA *uniao = lista_uniao(A, B);
-        lista_imprimir(uniao);
+        SET *uniao = set_uniao(A, B);
+        set_imprimir(uniao);
         free(uniao);
 
     }else if(op == 3){ //remoçao
         int chave;
         scanf("%d", &chave);
-        if(lista_remover(A, chave)){
+        if(set_remover(A, chave)){
             printf("remocao bem sucedida\n");
-            lista_imprimir(A);
+            set_imprimir(A);
         }else
             printf("remocao mal sucedida\n");
 
     }else if(op == 4){ //intersecçao
-        LISTA *inter = lista_interseccao(A, B);
-        lista_imprimir(inter);
+        SET *inter = set_interseccao(A, B);
+        set_imprimir(inter);
         free(inter);
     }
 
+    set_apagar(&A);
+    set_apagar(&B);
+
     return 0;
 }
+
+//ate agora deu tudo certo. gloria aleluia

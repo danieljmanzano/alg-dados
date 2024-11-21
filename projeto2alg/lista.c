@@ -7,7 +7,7 @@ struct lista_{
     int tam;
 };
 
-int buscabin(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa no .h, então faço o protótipo aqui mesmo
+int buscabinL(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa no .h, então faço o protótipo aqui mesmo
 
 LISTA *lista_criar(){
     LISTA *l = malloc(sizeof(LISTA));
@@ -32,7 +32,7 @@ bool lista_inserir(LISTA *l, int chave){
     if(l == NULL || l->tam == TAM_MAX) return false;
 
     int flag = 0;
-    int i = buscabin(l, 0, l->tam - 1, chave, &flag); 
+    int i = buscabinL(l, 0, l->tam - 1, chave, &flag); 
     for(int j = l->tam; j > i; j--)
         l->lista[j] = l->lista[j - 1]; //desloca todas posições para direita a partir da que eu quero inserir
         
@@ -51,7 +51,7 @@ bool lista_remover(LISTA *l, int chave){
     if(l == NULL || l->tam == 0) return false;
 
     int flag = 0;
-    int i = buscabin(l, 0, l->tam - 1, chave, &flag);
+    int i = buscabinL(l, 0, l->tam - 1, chave, &flag);
 
     if(!flag) return false; //caso nao tenha achado
 
@@ -74,7 +74,7 @@ void lista_imprimir(LISTA *l){
 }
 
 /*como tenho que usar busca binaria tanto para insercao como remoçao, uso a flag "achou" para casos em que preciso buscar e remover, enquanto ignoro para quando quero apenas inserir*/
-int buscabin(LISTA *l, int i, int f, int busca, int *achou){ //fora o comentário acima, a função é uma busca binária comum
+int buscabinL(LISTA *l, int i, int f, int busca, int *achou){ //fora o comentário acima, a função é uma busca binária comum
     int m = (i + f) / 2;
 
     if(i > f){ //caso nao tenha achado
@@ -87,9 +87,9 @@ int buscabin(LISTA *l, int i, int f, int busca, int *achou){ //fora o comentári
     }
 
     if(*(l->lista[m]) < busca){
-        return buscabin(l, m + 1, f, busca, achou);
+        return buscabinL(l, m + 1, f, busca, achou);
     }else if(*(l->lista[m]) > busca){
-        return buscabin(l, i, m - 1, busca, achou);
+        return buscabinL(l, i, m - 1, busca, achou);
     }
     
     return -1; //a função não chega aqui, mas para evitar warning fica esse retorno
@@ -99,7 +99,7 @@ bool lista_pertence(LISTA *l, int chave){
     if(l == NULL || l->tam == 0) return false;
 
     int flag = 0;
-    buscabin(l, 0, l->tam - 1, chave, &flag);
+    buscabinL(l, 0, l->tam - 1, chave, &flag);
 
     if(flag) return true;
     return false;

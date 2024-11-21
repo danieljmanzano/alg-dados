@@ -7,7 +7,7 @@
 
 typedef struct no_{
     struct no_ *esq, *dir;
-    int chave;
+    int chave, fb; //fb é o meu fator balanceamento do nó na arvore
 }NO;
 
 typedef struct arvore_{
@@ -30,6 +30,7 @@ NO *no_criar(int chave){
     if(!no) return NULL;
 
     no->chave = chave;
+    no->fb = 0;
     no->esq = NULL;
     no->dir = NULL;
     return no;
@@ -51,58 +52,56 @@ int arvore_profundidade(NO *no){ //serve pra ver de subarvores tambem, só passa
     return((e > d) ? e : d) + 1;
 }
 
-int fatorBalanceamento(NO *no){
-    if(!no) return 0;
-    return altura(no->esq) - altura(no->dir);
-}
-
 /*funçoes juntas*/
 /*rotações simples e balanceamento*/
 NO* rotacaoDireita(NO *desbalanceado){ 
     NO *novaRaiz = desbalanceado->esq;
     NO *subarvoreTransferida = novaRaiz->dir;
 
-    novaRaiz->dir = desbalanceado;
+    novaRaiz->dir = desbalanceado; //roda
     desbalanceado->esq = subarvoreTransferida;
+
+    desbalanceado->fb = altura(desbalanceado->esq) - altura(desbalanceado->dir); //acerta o fator balanceamento novo
+    novaRaiz->fb = altura(novaRaiz->esq) - altura(novaRaiz->dir);
 
     return novaRaiz;
 }
 
-NO* rotacaoEsquerda(NO *desbalanceado){
+NO* rotacaoEsquerda(NO *desbalanceado){ //mesma coisa de cima mas pra esquerda
     NO *novaRaiz = desbalanceado->dir;
     NO *subarvoreTransferida = novaRaiz->esq;
 
     novaRaiz->esq = desbalanceado;
     desbalanceado->dir = subarvoreTransferida;
 
+    desbalanceado->fb = altura(desbalanceado->esq) - altura(desbalanceado->dir);
+    novaRaiz->fb = altura(novaRaiz->esq) - altura(novaRaiz->dir);
+
     return novaRaiz;
 }
 
 NO* balancear(NO *raiz){
-    int balance = fatorBalanceamento(raiz);
+    raiz->fb = altura(raiz->esq) - altura(raiz->dir);
     
-    //rotaçao direita
-    if(balance > 1 && fatorBalanceamento(raiz->esq) >= 0)
+    if(raiz->fb > 1 && raiz->esq->fb >= 0) //roda direita
         return rotacaoDireita(raiz);
     
-    //rotaçao esquerda
-    if(balance < -1 && fatorBalanceamento(raiz->dir) <= 0)
+    if(raiz->fb < -1 && raiz->dir->fb <= 0) //roda esquerda
         return rotacaoEsquerda(raiz);
     
-    //rotaçao esquerda-direita (dupla)
-    if(balance > 1 && fatorBalanceamento(raiz->esq) < 0){
+    if(raiz->fb > 1 && raiz->esq->fb < 0){ //roda esquerda direita
         raiz->esq = rotacaoEsquerda(raiz->esq);
         return rotacaoDireita(raiz);
     }
     
-    //rotaçao direita-esquerda (dupla)
-    if(balance < -1 && fatorBalanceamento(raiz->dir) > 0){
+    if(raiz->fb < -1 && raiz->dir->fb > 0){ //roda direita esquerda
         raiz->dir = rotacaoDireita(raiz->dir);
         return rotacaoEsquerda(raiz);
     }
     
     return raiz;
-}
+} //talvez seja meio obvio pra onde roda, mas por desencargo de consciencia deixei anotado ali
+
 /*--------------*/
 
 
@@ -116,7 +115,8 @@ NO *arvore_inserir_no(NO *raiz, NO *novo_no) {
 
     else if(novo_no->chave > raiz->chave)
         raiz->dir = arvore_inserir_no(raiz->dir, novo_no);
-    
+
+    raiz->fb = altura(raiz->esq) - altura(raiz->dir); //ja atualizo o fator balanceamento do nó
     return balancear(raiz);
 }
 
@@ -185,13 +185,13 @@ bool arvore_remover(ARVORE *t, int chave) {
 
 
 void verificar_altura(NO *raiz){ //função pra debugar, show da bola
-    if(raiz == NULL) return;
+    if(!raiz) return;
     
-    printf("nó %d: altura = %d, fb = %d\n", raiz->chave, altura(raiz), fatorBalanceamento(raiz));
+    printf("nó %d: altura = %d, fb = %d\n", raiz->chave, altura(raiz), raiz->fb);
     
     verificar_altura(raiz->esq);
     verificar_altura(raiz->dir);
-}
+} //teoricamente nao é pra usar em nenhum momento, mas é bom pra se der ruim aqui e eu tenho que ver (acontece bastante...)
 
 
 /*funçoes juntas*/
@@ -232,25 +232,27 @@ void arvore_imprimir(ARVORE *t){
     }
 
     imprimir_em_ordem(t->raiz);
+    printf("\n");
+    return;
 }
 /*--------------*/
 
 
-bool buscabin(NO *raiz, int chave) {
-    if(raiz == NULL) return false;
+bool buscabinT(NO *raiz, int chave) {
+    if(!raiz) return false;
     
     if(chave == raiz->chave) return true;
     
     if(chave < raiz->chave)
-        return buscabin(raiz->esq, chave);
+        return buscabinT(raiz->esq, chave);
     else
-        return buscabin(raiz->dir, chave);
+        return buscabinT(raiz->dir, chave);
 }
 
 bool arvore_pertence(ARVORE *t, int chave){
     if(!t) return false;
 
-    if(buscabin(t->raiz, chave))
+    if(buscabinT(t->raiz, chave))
         return true;
 
     else return false;
@@ -262,7 +264,7 @@ void copia_arvore(NO *raiz, ARVORE *nova_arvore){ //percorre uma arvore (parte d
     if(!raiz) return;
     
     copia_arvore(raiz->esq, nova_arvore);
-    arvore_inserir(nova_arvore, raiz->chave);
+    arvore_inserir(nova_arvore, raiz->chave); //como minha inserçao nao repete numero, posso só sair tacando tudo das duas que vai dar a uniao
     copia_arvore(raiz->dir, nova_arvore);
 }
 
@@ -280,7 +282,7 @@ ARVORE *arvore_uniao(ARVORE *t1, ARVORE *t2){
         return nova_arvore;
     }
 
-    //caso as duas existam, basicamente só vai copiar as duas na nova
+    //caso as duas existam, basicamente só vai copiar as duas na nova 
     copia_arvore(t1->raiz, nova_arvore);
     copia_arvore(t2->raiz, nova_arvore);
 
@@ -302,7 +304,7 @@ void percorre_interseccao(NO *raiz, ARVORE *t2, ARVORE *nova_arvore){ //basicame
 }
 
 ARVORE *arvore_interseccao(ARVORE *t1, ARVORE *t2) {
-    if(!t1 || !t2) return NULL;
+    if(!t1 || !t2) return NULL; //se uma das duas é vazia, ja nao tem intersecçao
 
     ARVORE *nova_arvore = arvore_criar();
     if(!nova_arvore) return NULL;
@@ -315,6 +317,7 @@ ARVORE *arvore_interseccao(ARVORE *t1, ARVORE *t2) {
 
 
 /*pra testar as operações aqui em baixo (depois vou tirar pq nao é pra ter main aqui né)*/
+/*
 int main(void){
     ARVORE *arvore = arvore_criar();
 
@@ -359,5 +362,5 @@ int main(void){
 
     return 0;
 }
-
+*/
 /*pelo visto ta dando certo!!!!! graças a Deus!!!*/
