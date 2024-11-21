@@ -26,11 +26,11 @@ ABB *abb_criar(void){
     return t;
 }
 
-NO *no_criar(int chave){
+NO *no_criar(ITEM *item){
     NO *no = malloc(sizeof(NO));
     if(!no) return NULL;
 
-    item_set_chave(no->chave, chave);
+    no->chave = item;
     no->esq = NULL;
     no->dir = NULL;
     return no;
@@ -108,7 +108,7 @@ NO* balancear(NO *raiz){
 
 
 /*funçoes juntas*/
-NO *abb_inserir_no(NO *raiz, NO *novo_no) { //-------------------------------------------------------------------------------------------------------------------------------problema aqui, favor arrumar
+NO *abb_inserir_no(NO *raiz, NO *novo_no) { 
     if(!raiz)
         return novo_no; //chegou às folhas: local de inserção
 
@@ -125,7 +125,7 @@ NO *abb_inserir_no(NO *raiz, NO *novo_no) { //----------------------------------
 bool abb_inserir(ABB *t, ITEM *item){
     if(!t) return false;
 
-    NO *novo_no = no_criar(item_get_chave(item));
+    NO *novo_no = no_criar(item);
     if(!novo_no) return false;
 
     t->raiz = abb_inserir_no(t->raiz, novo_no);
@@ -240,13 +240,22 @@ void abb_imprimir(ABB *t){
 bool percorre_balanceamento(NO *no){
     if(!no) return true;
 
-    percorre_balanceamento(no->esq);
-    if(fatorBalanceamento(no) > 1 || fatorBalanceamento(no) < -1) return false;
-    else return true;
-    percorre_balanceamento(no->dir);
+    int fb = fatorBalanceamento(no);
+    if (fb > 1 || fb < -1) {
+        return false;
+    }
+    
+    //printf("no: %d, fb: %d\n", item_get_chave(no->chave), fb);
+    
+    bool esq_balanceada = percorre_balanceamento(no->esq);
+    bool dir_balanceada = percorre_balanceamento(no->dir);
+
+    return esq_balanceada && dir_balanceada;
+
 }
 
 bool abb_perfeitamente_balanceada(ABB *T){
     if(!T) return true;
     return !percorre_balanceamento(T->raiz);
 }
+
