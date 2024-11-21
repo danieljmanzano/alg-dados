@@ -3,6 +3,10 @@
 #include "item.h"
 #include "ABB.h"
 
+//exercicio de runcodes. temos que ver se uma arvore é balanceada ou nao.
+//segue o mesmo naipe dos ultimos runcodes. usa a implementaçao do TAD da arvore ate agora mas a maior ideia é desenvolver a funçao que resolva o problema
+//usei o TAD que tava fazendo pro projeto, entao tem uns par de coisa inutil a mais. o importante mesmo sao as duas ultimas funçoes
+
 #define FILHO_ESQ 0
 #define FILHO_DIR 1
 
@@ -237,13 +241,13 @@ void abb_imprimir(ABB *t){
 }
 /*--------------*/
 
+/*funçoes juntas*/
 bool percorre_balanceamento(NO *no){
     if(!no) return true;
 
     int fb = fatorBalanceamento(no);
-    if (fb > 1 || fb < -1) {
+    if(fb > 1 || fb < -1) 
         return false;
-    }
     
     //printf("no: %d, fb: %d\n", item_get_chave(no->chave), fb);
     
@@ -251,11 +255,11 @@ bool percorre_balanceamento(NO *no){
     bool dir_balanceada = percorre_balanceamento(no->dir);
 
     return esq_balanceada && dir_balanceada;
-
 }
 
 bool abb_perfeitamente_balanceada(ABB *T){
     if(!T) return true;
-    return !percorre_balanceamento(T->raiz);
+    return !percorre_balanceamento(T->raiz); //assim como os ultimos runcodes, essa brincadeira funciona ao contrario (0 se é balanceada, 1 se nao)
 }
+/*---------------*/
 

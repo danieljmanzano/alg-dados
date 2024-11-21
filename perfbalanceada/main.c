@@ -3,6 +3,9 @@
 #include "item.h"
 #include "ABB.h"
 
+//main pronta. para explicaçao ver o ABB.c
+//tem tao pouca coisa que nem precisa ver ok
+
 int main(void) {
   int n;
   scanf("%d", &n);
