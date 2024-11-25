@@ -11,11 +11,11 @@ int buscabinL(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa
 
 LISTA *lista_criar(){
     LISTA *l = malloc(sizeof(LISTA));
-    if(l == NULL) return NULL; //erro de alocação
+    if(!l) return NULL; //erro de alocação
 
     l->tam = 0;
     return l;
-}
+}   
 
 void lista_apagar(LISTA **l){
     if(*l == NULL) return; //caso a lista nao exista, nao há como apagar
@@ -33,6 +33,8 @@ bool lista_inserir(LISTA *l, int chave){
 
     int flag = 0;
     int i = buscabinL(l, 0, l->tam - 1, chave, &flag); 
+    if(flag) return false; //ja tem ele na lista, nao insere
+
     for(int j = l->tam; j > i; j--)
         l->lista[j] = l->lista[j - 1]; //desloca todas posições para direita a partir da que eu quero inserir
         
@@ -107,28 +109,46 @@ bool lista_pertence(LISTA *l, int chave){
 
 LISTA *lista_uniao(LISTA *l1, LISTA *l2){
     LISTA *uniao = lista_criar();
-    if(uniao == NULL) return NULL;
+    if(!uniao) return NULL;
 
     int i = 0, j = 0, cont = 0;
     while(i < l1->tam && j < l2->tam){ //pego sempre o menor numero das duas listas a cada iteração e avanço posição no de onde peguei
-        if(*(l1->lista[i]) < *(l2->lista[j])) 
-            uniao->lista[cont++] = l1->lista[i++];
+        int *novo_elem = malloc(sizeof(int)); //novo elemento pra fazer parte da uniao
+        if(!novo_elem) return NULL;
+
+        if(*(l1->lista[i]) < *(l2->lista[j])){ 
+            *novo_elem = *(l1->lista[i++]);
+            uniao->lista[cont++] = novo_elem;
+        }
             
-        else if(*(l1->lista[i]) > *(l2->lista[j]))
-            uniao->lista[cont++] = l2->lista[j++];
+        else if(*(l1->lista[i]) > *(l2->lista[j])){
+            *novo_elem = *(l2->lista[j++]);
+            uniao->lista[cont++] = novo_elem;
+        }
 
         else{ //aqui, caso os numeros sejam iguais, adiciono só uma vez (e avanço as duas listas)
-            uniao->lista[cont++] = l1->lista[i];
+            *novo_elem = *(l1->lista[i]);
+            uniao->lista[cont++] = novo_elem;
             i++;
             j++;
         }
     }
 
-    while(i < l1->tam) //adiciono na uniao os restantes da lista 1 (caso existam)
-        uniao->lista[cont++] = l1->lista[i++];
+    while(i < l1->tam){ //adiciono na uniao os restantes da lista 1 (caso existam)
+        int *novo_elem = malloc(sizeof(int));
+        if(!novo_elem) return NULL;
+        
+        *novo_elem = *(l1->lista[i++]);
+        uniao->lista[cont++] = novo_elem;
+    }
 
-    while(j < l2->tam) //o mesmo para a lista 2
-        uniao->lista[cont++] = l2->lista[j++];
+    while(j < l2->tam){ //o mesmo para a lista 2
+        int *novo_elem = malloc(sizeof(int));
+        if(!novo_elem) return NULL;
+        
+        *novo_elem = *(l2->lista[j++]);
+        uniao->lista[cont++] = novo_elem;
+    }
 
     uniao->tam = cont;
     return uniao;
@@ -136,7 +156,7 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
 
 LISTA *lista_interseccao(LISTA *l1, LISTA *l2){
     LISTA *inter = lista_criar();
-    if(inter == NULL) return NULL;
+    if(!inter) return NULL;
 
     int i = 0, j = 0, cont = 0;
     while(i < l1->tam && j < l2->tam){ //avanço uma posiçao sempre na lista com o menor numero
@@ -147,7 +167,11 @@ LISTA *lista_interseccao(LISTA *l1, LISTA *l2){
             j++;
 
         else{ //quando encontro iguais, coloco na intersecçao
-            inter->lista[cont++] = l1->lista[i];
+            int *novo_elem = malloc(sizeof(int));
+            if(!novo_elem) return NULL;
+            
+            *novo_elem = *(l1->lista[i]);
+            inter->lista[cont++] = novo_elem;
             i++;
             j++;
         }

@@ -12,7 +12,7 @@ typedef struct no_{
 
 typedef struct arvore_{
     NO *raiz;
-    int profundidade, tam; //acrescentei o 'tam' no campo da struct pra facilitar algumas operações. originalmente nao tem no do rudinei
+    int profundidade;
 }ARVORE;
  
 ARVORE *arvore_criar(void){
@@ -20,7 +20,6 @@ ARVORE *arvore_criar(void){
     if(t != NULL){
         t->profundidade = -1; //uma arvore inicializada ainda nao tem nenhum nó, o que faz dela ter profundidade -1
         t->raiz = NULL;
-        t->tam = 0;
     }
     return t;
 }
@@ -127,7 +126,6 @@ bool arvore_inserir(ARVORE *t, int chave){
     if(!novo_no) return false;
 
     t->raiz = arvore_inserir_no(t->raiz, novo_no);
-    t->tam++;
     return true;
 }
 /*--------------*/
@@ -178,7 +176,6 @@ NO* arvore_remover_no(NO *raiz, int chave){
 bool arvore_remover(ARVORE *t, int chave) {
     if (!t || !t->raiz) return false;
     t->raiz = arvore_remover_no(t->raiz, chave);
-    t->tam--;
     return true;
 }
 /*--------------*/

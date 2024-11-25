@@ -57,7 +57,7 @@ int main(void){
     }else if(op == 2){ //uniao
         SET *uniao = set_uniao(A, B);
         set_imprimir(uniao);
-        free(uniao);
+        set_apagar(&uniao);
 
     }else if(op == 3){ //remoçao
         int chave;
@@ -71,7 +71,7 @@ int main(void){
     }else if(op == 4){ //intersecçao
         SET *inter = set_interseccao(A, B);
         set_imprimir(inter);
-        free(inter);
+        set_apagar(&inter);
     }
 
     set_apagar(&A);
