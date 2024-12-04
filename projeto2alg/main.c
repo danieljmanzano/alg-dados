@@ -19,7 +19,7 @@ conjunto) e Imprimir (imprimir os elementos armazenados no Conjunto).
 ou não no conjunto), União entre 2 Conjuntos, Intersecção entre 2 Conjuntos. Note
 que essas 2 útlimas operações recebem como entrada 2 conjuntos e devolvem um
 terceiro conjunto como resposta.*/
-
+/*
 int main(void){ 
     SET *A, *B;
     int n_a, n_b, x;
@@ -78,6 +78,131 @@ int main(void){
     set_apagar(&B);
 
     return 0;
-}
+}*/
 
 //ate agora deu tudo certo. gloria aleluia
+
+//essa main aqui embaixo é para ser compativel com a entrada de txt do gerador de caso teste. guia do que fazer abaixo:
+//primeiro tem que compilar o teste.c, rodar o compilado do teste.c (daqui voce vai ter o txt dos casos testes)
+//daí, é só dar make e make run que vai rodar o que ta aq embaixo
+
+int main(void) {
+    FILE *input_file = NULL;
+    int teste = 1;
+
+    // Abre o arquivo de casos de teste para leitura
+    input_file = fopen("test_cases.txt", "r");
+    if (input_file == NULL) {
+        printf("Erro ao abrir o arquivo de casos de teste.\n");
+        return 1;
+    }
+
+    // Loop para processar todos os casos de teste no arquivo
+    while (!feof(input_file)) {
+        SET *A, *B;
+        int n_a, n_b, x;
+        int op;
+        int tipo;
+        int chave;
+
+        // Verifica se conseguiu ler o tipo de estrutura
+        if (fscanf(input_file, "%d", &tipo) != 1) {
+            break;  // Sai se não conseguir ler mais dados
+        }
+
+        // Cria os conjuntos
+        A = set_criar(tipo);
+        B = set_criar(tipo);
+
+        // Lê o número de elementos de cada conjunto
+        if (fscanf(input_file, "%d %d", &n_a, &n_b) != 2) {
+            printf("Erro ao ler o número de elementos dos conjuntos no teste %d.\n", teste);
+            set_apagar(&A);
+            set_apagar(&B);
+            break;
+        }
+
+        // Lê e insere elementos no primeiro conjunto
+        for (int i = 0; i < n_a; i++) {
+            if (fscanf(input_file, "%d", &x) != 1) {
+                printf("Erro ao ler elemento do primeiro conjunto no teste %d.\n", teste);
+                set_apagar(&A);
+                set_apagar(&B);
+                break;
+            }
+            set_inserir(A, x);
+        }
+
+        // Lê e insere elementos no segundo conjunto
+        for (int i = 0; i < n_b; i++) {
+            if (fscanf(input_file, "%d", &x) != 1) {
+                printf("Erro ao ler elemento do segundo conjunto no teste %d.\n", teste);
+                set_apagar(&A);
+                set_apagar(&B);
+                break;
+            }
+            set_inserir(B, x);
+        }
+
+        // Lê a operação
+        if (fscanf(input_file, "%d", &op) != 1) {
+            printf("Erro ao ler a operação no teste %d.\n", teste);
+            set_apagar(&A);
+            set_apagar(&B);
+            break;
+        }
+
+        printf("--- Teste %d ---\n", teste);
+
+        // Realiza a operação conforme o código original
+        if (op == 1) { // pertence
+            if (fscanf(input_file, "%d", &chave) != 1) {
+                printf("Erro ao ler chave para operação de pertence no teste %d.\n", teste);
+                set_apagar(&A);
+                set_apagar(&B);
+                break;
+            }
+            
+            if (set_pertence(A, chave))
+                printf("Pertence\n");
+            else
+                printf("Nao pertence\n");
+        } else if (op == 2) { // uniao
+            SET *uniao = set_uniao(A, B);
+            printf("União dos conjuntos:\n");
+            set_imprimir(uniao);
+            set_apagar(&uniao);
+        } else if (op == 3) { // remoção
+            if (fscanf(input_file, "%d", &chave) != 1) {
+                printf("Erro ao ler chave para operação de remoção no teste %d.\n", teste);
+                set_apagar(&A);
+                set_apagar(&B);
+                break;
+            }
+            
+            if (set_remover(A, chave)) {
+                printf("Remoção bem sucedida. Conjunto atualizado:\n");
+                set_imprimir(A);
+            } else
+                printf("Remoção mal sucedida\n");
+        } else if (op == 4) { // intersecção
+            SET *inter = set_interseccao(A, B);
+            printf("Interseção dos conjuntos:\n");
+            set_imprimir(inter);
+            set_apagar(&inter);
+        }
+
+        // Libera os conjuntos
+        set_apagar(&A);
+        set_apagar(&B);
+
+        teste++;
+    }
+
+    // Fecha o arquivo
+    fclose(input_file);
+
+    printf("Total de testes processados: %d\n", teste - 1);
+
+    return 0;
+}
