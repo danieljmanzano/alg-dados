@@ -7,4 +7,4 @@ run:
 	./teste
 
 clean:
-	rm teste test_cases.txt gerador
+	rm teste test_cases.txt expected_output.txt gerador

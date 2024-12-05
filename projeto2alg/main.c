@@ -79,12 +79,16 @@ int main(void){
 
     return 0;
 }*/
-
 //ate agora deu tudo certo. gloria aleluia
 
-//essa main aqui embaixo é para ser compativel com a entrada de txt do gerador de caso teste. guia do que fazer abaixo:
-//primeiro tem que compilar o teste.c, rodar o compilado do teste.c (daqui voce vai ter o txt dos casos testes)
-//daí, é só dar make e make run que vai rodar o que ta aq embaixo
+
+
+
+
+//essa main aqui embaixo é para ser compativel com a entrada de txt do gerador de caso teste. servindo pra testar o codigo
+//uma diferença de logica dessa pra original é que essa roda mais de um caso teste de uma vez. a original só faz uma operaçao e acaba
+//depois de rodar aqui dá pra olhar o arquivo de saída esperada e comparar
+//só usando o make / make run / make clean funciona tudo legal. 
 
 int main(void) {
     FILE *input_file = NULL;
@@ -187,8 +191,10 @@ int main(void) {
                 printf("Remoção mal sucedida\n");
         } else if (op == 4) { // intersecção
             SET *inter = set_interseccao(A, B);
-            printf("Interseção dos conjuntos:\n");
-            set_imprimir(inter);
+            if(inter){
+                printf("Intersecção dos conjuntos:\n");
+                set_imprimir(inter);
+            }
             set_apagar(&inter);
         }
 
