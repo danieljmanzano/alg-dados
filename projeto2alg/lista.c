@@ -58,15 +58,16 @@ bool lista_remover(LISTA *l, int chave){
     if(!flag) return false; //caso nao tenha achado
 
     for(int j = i; j < l->tam - 1; j++)
-        l->lista[j] = l->lista[j + 1];
+        *(l->lista[j]) = *(l->lista[j + 1]);
     
+    free(l->lista[l->tam - 1]);
     l->tam--;
 
     return true;
 }   
 
 void lista_imprimir(LISTA *l){
-    if(l == NULL || l->tam == 0) return;
+    if(!l || !(l->tam)) return;
 
     for(int i = 0; i < l->tam; i++)
         printf("%d ", *(l->lista[i]));
@@ -112,18 +113,20 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
     if(!uniao) return NULL;
 
     int i = 0, j = 0, cont = 0;
-    while(i < l1->tam && j < l2->tam){ //pego sempre o menor numero das duas listas a cada iteração e avanço posição no de onde peguei
+    while(i < l1->tam && j < l2->tam && uniao->tam < TAM_MAX){ //pego sempre o menor numero das duas listas a cada iteração e avanço posição no de onde peguei
         int *novo_elem = malloc(sizeof(int)); //novo elemento pra fazer parte da uniao
         if(!novo_elem) return NULL;
 
         if(*(l1->lista[i]) < *(l2->lista[j])){ 
             *novo_elem = *(l1->lista[i++]);
             uniao->lista[cont++] = novo_elem;
+            uniao->tam++;
         }
             
         else if(*(l1->lista[i]) > *(l2->lista[j])){
             *novo_elem = *(l2->lista[j++]);
             uniao->lista[cont++] = novo_elem;
+            uniao->tam++;
         }
 
         else{ //aqui, caso os numeros sejam iguais, adiciono só uma vez (e avanço as duas listas)
@@ -131,26 +134,33 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
             uniao->lista[cont++] = novo_elem;
             i++;
             j++;
+            uniao->tam++;
         }
     }
 
-    while(i < l1->tam){ //adiciono na uniao os restantes da lista 1 (caso existam)
+    while(i < l1->tam && uniao->tam < TAM_MAX){ //adiciono na uniao os restantes da lista 1 (caso existam)
         int *novo_elem = malloc(sizeof(int));
         if(!novo_elem) return NULL;
         
         *novo_elem = *(l1->lista[i++]);
         uniao->lista[cont++] = novo_elem;
+        uniao->tam++;
     }
 
-    while(j < l2->tam){ //o mesmo para a lista 2
+    while(j < l2->tam && uniao->tam < TAM_MAX){ //o mesmo para a lista 2
         int *novo_elem = malloc(sizeof(int));
         if(!novo_elem) return NULL;
         
         *novo_elem = *(l2->lista[j++]);
         uniao->lista[cont++] = novo_elem;
+        uniao->tam++;
     }
 
-    uniao->tam = cont;
+    if(uniao->tam == TAM_MAX - 1){
+        printf("espaço insuficiente para gerar a união!\n");
+        exit (1);
+    }
+
     return uniao;
 }
 

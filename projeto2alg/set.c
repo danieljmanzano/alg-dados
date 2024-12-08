@@ -32,11 +32,11 @@ void set_apagar(SET **s){
 
     if((*s)->escolha == 0)
         if((*s)->l != NULL)
-            lista_apagar(&(*s)->l);
+            lista_apagar(&((*s)->l));
 
     if((*s)->escolha == 1)
         if((*s)->t != NULL)
-            arvore_apagar(&(*s)->t);
+            arvore_apagar(&((*s)->t));
 
     free (*s);
     *s = NULL;
@@ -85,10 +85,9 @@ bool set_pertence(SET *s, int chave){
 }
 
 SET *set_uniao(SET *s1, SET *s2){
-    SET *uniao = NULL;
 
     if(s1->escolha == 0 && s2->escolha == 0){
-        uniao = set_criar(0);
+        SET *uniao = malloc(sizeof(SET));
         if(!uniao) return NULL; //se nao criou, volta como erro
         uniao->l = lista_uniao(s1->l, s2->l);
         if(!(uniao->l)) return NULL; //outro possivel erro
@@ -96,7 +95,7 @@ SET *set_uniao(SET *s1, SET *s2){
     }
 
     else if(s1->escolha == 1 && s2->escolha == 1){ //mesma coisa de cima
-        uniao = set_criar(1);
+        SET *uniao = malloc(sizeof(SET));
         if(!uniao) return NULL;
         uniao->t = arvore_uniao(s1->t, s2->t);
         if(!(uniao->t)) return NULL;
@@ -107,10 +106,9 @@ SET *set_uniao(SET *s1, SET *s2){
 }
 
 SET *set_interseccao(SET *s1, SET *s2){
-    SET *inter;
 
     if(s1->escolha == 0 && s2->escolha == 0){
-        inter = set_criar(0);
+        SET *inter = malloc(sizeof(SET));
         if(!inter) return NULL; //retornos NULL na mesma logica da uniao
         inter->l = lista_interseccao(s1->l, s2->l);
         if(!(inter->l)) return NULL;
@@ -118,7 +116,7 @@ SET *set_interseccao(SET *s1, SET *s2){
     }
     
     else if(s1->escolha == 1 && s2->escolha == 1){
-        inter = set_criar(1);
+        SET *inter = malloc(sizeof(SET));
         if(!inter) return NULL;
         inter->t = arvore_interseccao(s1->t, s2->t);
         if(!(inter->t)) return NULL;

@@ -19,7 +19,7 @@ conjunto) e Imprimir (imprimir os elementos armazenados no Conjunto).
 ou não no conjunto), União entre 2 Conjuntos, Intersecção entre 2 Conjuntos. Note
 que essas 2 útlimas operações recebem como entrada 2 conjuntos e devolvem um
 terceiro conjunto como resposta.*/
-/*
+
 int main(void){ 
     SET *A, *B;
     int n_a, n_b, x;
@@ -62,15 +62,14 @@ int main(void){
     }else if(op == 3){ //remoçao
         int chave;
         scanf("%d", &chave);
-        if(set_remover(A, chave)){
-            printf("remocao bem sucedida\n");
+        if(set_remover(A, chave))
             set_imprimir(A);
-        }else
+        else
             printf("remocao mal sucedida\n");
 
     }else if(op == 4){ //intersecçao
         SET *inter = set_interseccao(A, B);
-        set_imprimir(inter);
+        if(inter) set_imprimir(inter); //só imprime se nao for
         set_apagar(&inter);
     }
 
@@ -78,18 +77,14 @@ int main(void){
     set_apagar(&B);
 
     return 0;
-}*/
-//ate agora deu tudo certo. gloria aleluia
-
-
-
+}
 
 
 //essa main aqui embaixo é para ser compativel com a entrada de txt do gerador de caso teste. servindo pra testar o codigo
 //uma diferença de logica dessa pra original é que essa roda mais de um caso teste de uma vez. a original só faz uma operaçao e acaba
 //depois de rodar aqui dá pra olhar o arquivo de saída esperada e comparar
 //só usando o make / make run / make clean funciona tudo legal. 
-
+/*
 int main(void) {
     FILE *input_file = NULL;
     int teste = 1;
@@ -212,3 +207,4 @@ int main(void) {
 
     return 0;
 }
+*/

@@ -308,21 +308,63 @@ ARVORE *arvore_interseccao(ARVORE *t1, ARVORE *t2) {
 }
 /*--------------*/
 
+/*funçoes juntas*/
+int conta_no(NO *raiz){
+    if(!raiz) return 0;
+
+    return 1 + (conta_no(raiz->esq) + conta_no(raiz->dir));
+}
+
+
+int arvore_nos(ARVORE *t){ //retorna o numero de nós de uma arvore
+    if(!t) return 0;
+
+    return conta_no(t->raiz);
+}
+/*--------------*/
+
+/*funçoes juntas*/
+int soma_total(NO *raiz){ 
+    if(!raiz) return 0;
+
+    return (raiz->chave + soma_total(raiz->esq) + soma_total(raiz->dir));
+}
+
+int arvore_soma(ARVORE *t){ //soma os valores de todos os nós de uma arvore
+    if(!t) return 0;
+
+    return soma_total(t->raiz);
+}
+/*--------------*/
+
+/*funçoes juntas*/
+bool checa_fb(NO *no){
+    if(!no) return true;
+    if(no->fb != 0) return false;
+
+    return (checa_fb(no->esq) && checa_fb(no->dir));
+}
+
+bool arvore_cc(ARVORE *t){ //ve se uma arvore é completa cheia
+    if(!t) return false;
+
+    return checa_fb(t->raiz);
+}
+/*--------------*/
+
 /*pra testar as operações aqui em baixo (depois vou tirar pq nao é pra ter main aqui né)*/
 
-/*
 int main(void){
     ARVORE *arvore = arvore_criar();
 
-    arvore_inserir(arvore, 10);
-    arvore_remover(arvore, 5);
+    /*arvore_inserir(arvore, 10);
     arvore_inserir(arvore, 20);
     arvore_inserir(arvore, 1);
     arvore_inserir(arvore, 3);
     arvore_inserir(arvore, 4);
     arvore_inserir(arvore, 8);
     arvore_inserir(arvore, 30);
-    arvore_inserir(arvore, 40);
+    arvore_inserir(arvore, 40);*/
     arvore_inserir(arvore, 35);
     arvore_inserir(arvore, 50);
     arvore_inserir(arvore, 45);
@@ -336,8 +378,11 @@ int main(void){
     printf("\n");
     verificar_altura(arvore->raiz);
 
+    printf("\nnúmero de nós: %d", arvore_nos(arvore));
+    printf("\nsoma de todos os nós: %d", arvore_soma(arvore));
+    printf("\né completa cheia? %d\n", arvore_cc(arvore));
+
     return 0;
 }
-*/
 
 /*pelo visto ta dando certo!!!!! graças a Deus!!!*/
