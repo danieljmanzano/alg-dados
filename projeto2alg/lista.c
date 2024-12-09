@@ -108,14 +108,13 @@ bool lista_pertence(LISTA *l, int chave){
     return false;
 }
 
-LISTA *lista_uniao(LISTA *l1, LISTA *l2){
-    LISTA *uniao = lista_criar();
-    if(!uniao) return NULL;
+void lista_uniao(LISTA *l1, LISTA *l2, LISTA *uniao){
+    if(!uniao) return;
 
     int i = 0, j = 0, cont = 0;
     while(i < l1->tam && j < l2->tam && uniao->tam < TAM_MAX){ //pego sempre o menor numero das duas listas a cada iteração e avanço posição no de onde peguei
         int *novo_elem = malloc(sizeof(int)); //novo elemento pra fazer parte da uniao
-        if(!novo_elem) return NULL;
+        if(!novo_elem) return;
 
         if(*(l1->lista[i]) < *(l2->lista[j])){ 
             *novo_elem = *(l1->lista[i++]);
@@ -140,7 +139,7 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
 
     while(i < l1->tam && uniao->tam < TAM_MAX){ //adiciono na uniao os restantes da lista 1 (caso existam)
         int *novo_elem = malloc(sizeof(int));
-        if(!novo_elem) return NULL;
+        if(!novo_elem) return;
         
         *novo_elem = *(l1->lista[i++]);
         uniao->lista[cont++] = novo_elem;
@@ -149,7 +148,7 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
 
     while(j < l2->tam && uniao->tam < TAM_MAX){ //o mesmo para a lista 2
         int *novo_elem = malloc(sizeof(int));
-        if(!novo_elem) return NULL;
+        if(!novo_elem) return;
         
         *novo_elem = *(l2->lista[j++]);
         uniao->lista[cont++] = novo_elem;
@@ -161,12 +160,11 @@ LISTA *lista_uniao(LISTA *l1, LISTA *l2){
         exit (1);
     }
 
-    return uniao;
+    return;
 }
 
-LISTA *lista_interseccao(LISTA *l1, LISTA *l2){
-    LISTA *inter = lista_criar();
-    if(!inter) return NULL;
+void lista_interseccao(LISTA *l1, LISTA *l2, LISTA *inter){
+    if(!inter) return;
 
     int i = 0, j = 0, cont = 0;
     while(i < l1->tam && j < l2->tam){ //avanço uma posiçao sempre na lista com o menor numero
@@ -178,7 +176,7 @@ LISTA *lista_interseccao(LISTA *l1, LISTA *l2){
 
         else{ //quando encontro iguais, coloco na intersecçao
             int *novo_elem = malloc(sizeof(int));
-            if(!novo_elem) return NULL;
+            if(!novo_elem) return;
             
             *novo_elem = *(l1->lista[i]);
             inter->lista[cont++] = novo_elem;
@@ -189,5 +187,5 @@ LISTA *lista_interseccao(LISTA *l1, LISTA *l2){
 
     inter->tam = cont;
     if(cont == 0) printf("intersecção vazia\n");
-    return inter;
+    return;
 }

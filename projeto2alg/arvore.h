@@ -16,7 +16,7 @@
 
     /*operaçoes de conjunto*/
     bool arvore_pertence(ARVORE *arv, int chave);
-    ARVORE *arvore_uniao(ARVORE *arv1, ARVORE *arv2);
-    ARVORE *arvore_interseccao(ARVORE *arv1, ARVORE *arv2);
+    void arvore_uniao(ARVORE *arv1, ARVORE *arv2, ARVORE *nova_arvore);
+    void arvore_interseccao(ARVORE *arv1, ARVORE *arv2, ARVORE *nova_arvore);
     
 #endif

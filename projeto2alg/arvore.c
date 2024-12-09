@@ -257,29 +257,27 @@ void copia_arvore(NO *raiz, ARVORE *nova_arvore){ //percorre uma arvore (parte d
     if(!raiz) return;
     
     copia_arvore(raiz->esq, nova_arvore);
-    arvore_inserir(nova_arvore, raiz->chave); //como minha inserçao nao repete numero, posso só sair tacando tudo das duas que vai dar a uniao
+    arvore_inserir(nova_arvore, raiz->chave); 
     copia_arvore(raiz->dir, nova_arvore);
 }
 
-ARVORE *arvore_uniao(ARVORE *t1, ARVORE *t2){
-    if (!t1 && !t2) return NULL;
+void arvore_uniao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore){
+    if((!t1 && !t2) || !nova_arvore) return; //caso as duas arvores sejam nulas ou a nova nao está alocada, retorna
 
-    ARVORE *nova_arvore = arvore_criar();
-    if(!nova_arvore) return NULL;
     if(!t1){ //caso a t1 seja vazia, a união é só a segunda arvore
         copia_arvore(t2->raiz, nova_arvore);
-        return nova_arvore;
+        return;
     }
     if(!t2){ //mesma logica de cima
         copia_arvore(t1->raiz, nova_arvore);
-        return nova_arvore;
+        return;
     }
 
     //caso as duas existam, basicamente só vai copiar as duas na nova 
     copia_arvore(t1->raiz, nova_arvore);
     copia_arvore(t2->raiz, nova_arvore);
 
-    return nova_arvore;
+    return;
 }
 /*--------------*/
 
@@ -296,15 +294,12 @@ void percorre_interseccao(NO *raiz, ARVORE *t2, ARVORE *nova_arvore){ //basicame
     percorre_interseccao(raiz->dir, t2, nova_arvore);
 }
 
-ARVORE *arvore_interseccao(ARVORE *t1, ARVORE *t2) {
-    if(!t1 || !t2) return NULL; //se uma das duas é vazia, ja nao tem intersecçao
-
-    ARVORE *nova_arvore = arvore_criar();
-    if(!nova_arvore) return NULL;
+void arvore_interseccao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore) {
+    if(!t1 || !t2 || !nova_arvore) return; //se uma das duas é vazia, ja nao tem intersecçao
 
     percorre_interseccao(t1->raiz, t2, nova_arvore);
 
-    return nova_arvore;
+    return;
 }
 /*--------------*/
 

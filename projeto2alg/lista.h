@@ -16,7 +16,7 @@
 
     /*operaçoes de conjunto*/
     bool lista_pertence(LISTA *lista, int chave);
-    LISTA *lista_uniao(LISTA *lista1, LISTA *lista2);
-    LISTA *lista_interseccao(LISTA *lista1, LISTA *lista2);
+    void lista_uniao(LISTA *lista1, LISTA *lista2, LISTA *nova_lista);
+    void lista_interseccao(LISTA *lista1, LISTA *lista2, LISTA *nova_lista);
 
 #endif
