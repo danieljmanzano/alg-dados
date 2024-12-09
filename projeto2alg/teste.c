@@ -3,8 +3,7 @@
 #include <time.h>
 #include <stdbool.h>
 
-//codigo para criar os casos teste e saídas esperadas
-//claudio ei ai fez quase tudo. arrumei algumas logicas para ficarem de acordo com minhas saídas esperadas
+// Código para criar os casos teste e saídas esperadas
 
 // Estrutura simplificada para simular o conjunto
 typedef struct {
@@ -25,13 +24,11 @@ Conjunto* criar_conjunto(int* arr, int tamanho) {
     return conj;
 }
 
-// Função para liberar memória do conjunto
 void liberar_conjunto(Conjunto* conj) {
     free(conj->elementos);
     free(conj);
 }
 
-// Função para verificar se um elemento pertence ao conjunto
 bool pertence(Conjunto* conj, int elemento) {
     for (int i = 0; i < conj->tamanho; i++) {
         if (conj->elementos[i] == elemento) {
@@ -41,7 +38,6 @@ bool pertence(Conjunto* conj, int elemento) {
     return false;
 }
 
-// Função para remover um elemento do conjunto
 Conjunto* remover_elemento(Conjunto* conj, int elemento) {
     int novo_tamanho = 0;
     int* novo_arr = malloc(conj->tamanho * sizeof(int));
@@ -59,7 +55,6 @@ Conjunto* remover_elemento(Conjunto* conj, int elemento) {
     return novo_conj;
 }
 
-// Função para fazer união de conjuntos
 Conjunto* uniao(Conjunto* A, Conjunto* B) {
     int novo_tamanho = A->tamanho + B->tamanho;
     int* novo_arr = malloc(novo_tamanho * sizeof(int));
@@ -90,7 +85,6 @@ Conjunto* uniao(Conjunto* A, Conjunto* B) {
     return novo_conj;
 }
 
-// Função para fazer interseção de conjuntos
 Conjunto* interseccao(Conjunto* A, Conjunto* B) {
     int max_tamanho = A->tamanho < B->tamanho ? A->tamanho : B->tamanho;
     int* novo_arr = malloc(max_tamanho * sizeof(int));
@@ -116,7 +110,6 @@ int comparador(const void *a, const void *b) {
    return ( *(int*)a - *(int*)b );
 }
 
-// Função para gerar números únicos
 int* generate_unique_array(int size, int max_value) {
     int* arr = malloc(size * sizeof(int));
     int* used = calloc(max_value + 1, sizeof(int));
@@ -138,8 +131,8 @@ int* generate_unique_array(int size, int max_value) {
 
 void generate_test_cases(int num_cases) {
     // Abre os arquivos de saída
-    FILE* test_file = fopen("test_cases.txt", "w");
-    FILE* output_file = fopen("expected_output.txt", "w");
+    FILE* test_file = fopen("caso_teste.txt", "w");
+    FILE* output_file = fopen("saida_esperada.txt", "w");
     
     if (!test_file || !output_file) {
         perror("Erro ao abrir arquivos");
@@ -152,14 +145,14 @@ void generate_test_cases(int num_cases) {
     for (int caso = 1; caso <= num_cases; caso++) {
         // Escolhe tipo de estrutura 
         int tipo = rand() % 2;
-        
+        tipo = 1;
         // Gera tamanhos dos conjuntos
-        int n_a = rand() % 30 + 1; // 1 a 30 elementos
-        int n_b = rand() % 30 + 1; // 1 a 30 elementos
+        int n_a = rand() % 50 + 1; // 1 a 30 elementos
+        int n_b = rand() % 50 + 1; // 1 a 30 elementos
         
         // Gera conjuntos com números únicos (números até 100 no máximo)
-        int* conjunto_a = generate_unique_array(n_a, 100); // Alterar aqui para números maiores
-        int* conjunto_b = generate_unique_array(n_b, 100);
+        int* conjunto_a = generate_unique_array(n_a, 10000); 
+        int* conjunto_b = generate_unique_array(n_b, 10000);
         
         // Cria conjuntos para simulação
         Conjunto* A = criar_conjunto(conjunto_a, n_a);
@@ -183,7 +176,7 @@ void generate_test_cases(int num_cases) {
             fprintf(test_file, "%d ", conjunto_b[i]);
         }
         fprintf(test_file, "\n");
-        
+        op = 4;
         // Gera entrada e saída para cada operação
         switch (op) {
             case 1: { // Pertence
@@ -191,8 +184,7 @@ void generate_test_cases(int num_cases) {
                 fprintf(test_file, "%d\n", op);
                 fprintf(test_file, "%d\n", chave);
                 
-                // Saída esperada
-                fprintf(output_file, "--- Teste %d ---\n", caso);
+                //fprintf(output_file, "--- Teste %d ---\n", caso);
                 if(pertence(A, chave))
                     fprintf(output_file, "Pertence\n");
                 else    
@@ -202,15 +194,12 @@ void generate_test_cases(int num_cases) {
             case 2: { // União
                 fprintf(test_file, "%d\n", op);
                 
-                // Saída esperada
                 Conjunto* uniao_conj = uniao(A, B);
-                fprintf(output_file, "--- Teste %d ---\n", caso);
-                fprintf(output_file, "União dos conjuntos: [");
+                //fprintf(output_file, "--- Teste %d ---\n", caso);
                 for (int i = 0; i < uniao_conj->tamanho; i++) {
-                    fprintf(output_file, "%d%s", uniao_conj->elementos[i], 
-                            i < uniao_conj->tamanho - 1 ? ", " : "");
+                    fprintf(output_file, "%d ", uniao_conj->elementos[i]);
                 }
-                fprintf(output_file, "]\n");
+                fprintf(output_file, "\n");
                 liberar_conjunto(uniao_conj);
                 break;
             }
@@ -219,36 +208,33 @@ void generate_test_cases(int num_cases) {
                 fprintf(test_file, "%d\n", op);
                 fprintf(test_file, "%d\n", chave);
                 
-                // Saída esperada
                 Conjunto* removido = remover_elemento(A, chave);
-                fprintf(output_file, "--- Teste %d ---\n", caso);
-                fprintf(output_file, "Remoção bem sucedida. Conjunto atualizado: [");
+                //fprintf(output_file, "--- Teste %d ---\n", caso);
                 for (int i = 0; i < removido->tamanho; i++) {
-                    fprintf(output_file, "%d%s", removido->elementos[i], 
-                            i < removido->tamanho - 1 ? ", " : "");
+                    fprintf(output_file, "%d ", removido->elementos[i]);
                 }
-                fprintf(output_file, "]\n");
+                fprintf(output_file, "\n");
                 liberar_conjunto(removido);
                 break;
             }
             case 4: { // Interseção
                 fprintf(test_file, "%d\n", op);
                 
-                // Saída esperada
                 Conjunto* inter_conj = interseccao(A, B);
-                fprintf(output_file, "--- Teste %d ---\n", caso);
-                fprintf(output_file, "Interseção dos conjuntos: [");
-                for (int i = 0; i < inter_conj->tamanho; i++) {
-                    fprintf(output_file, "%d%s", inter_conj->elementos[i], 
-                            i < inter_conj->tamanho - 1 ? ", " : "");
+                //fprintf(output_file, "--- Teste %d ---\n", caso);
+                if(!inter_conj)
+                    fprintf(output_file, "intersecção vazia");
+                else{
+                    for (int i = 0; i < inter_conj->tamanho; i++) 
+                        fprintf(output_file, "%d%s", inter_conj->elementos[i], 
+                                i < inter_conj->tamanho - 1 ? ", " : "");
                 }
-                fprintf(output_file, "]\n");
+                fprintf(output_file, "\n");
                 liberar_conjunto(inter_conj);
                 break;
             }
         }
         
-        // Libera memória
         liberar_conjunto(A);
         liberar_conjunto(B);
         free(conjunto_a);
@@ -259,12 +245,11 @@ void generate_test_cases(int num_cases) {
     fclose(output_file);
     
     printf("Gerador de casos de teste criado com sucesso!\n");
-    printf("Arquivo de entradas: test_cases.txt\n");
-    printf("Arquivo de saídas esperadas: expected_output.txt\n");
+    printf("Arquivo de entradas: caso_teste.txt\n");
+    printf("Arquivo de saídas esperadas: saida_esperada.txt\n");
 }
 
 int main(void) {
-    // Gera 10 casos de teste diferentes
-    generate_test_cases(20);
+    generate_test_cases(1); // Mudar aqui para gerar mais casos (não gera mais txt, mas sim mais casos dentro do txt único)
     return 0;
 }

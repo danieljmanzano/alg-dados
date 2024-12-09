@@ -20,13 +20,14 @@ ou não no conjunto), União entre 2 Conjuntos, Intersecção entre 2 Conjuntos.
 que essas 2 útlimas operações recebem como entrada 2 conjuntos e devolvem um
 terceiro conjunto como resposta.*/
 
+
 int main(void){ 
     SET *A, *B;
     int n_a, n_b, x;
     int op;
     int tipo;
 
-    scanf("%d", &tipo); //isso aqui é pra decidir o TAD mas como to so testando lista nao muda nada ainda
+    scanf("%d", &tipo); 
 
     A = set_criar(tipo);
     B = set_criar(tipo);
@@ -69,7 +70,7 @@ int main(void){
 
     }else if(op == 4){ //intersecçao
         SET *inter = set_interseccao(A, B);
-        if(inter) set_imprimir(inter); //só imprime se nao for
+        if(inter) set_imprimir(inter); //só imprime se nao for vazia
         set_apagar(&inter);
     }
 
@@ -80,17 +81,19 @@ int main(void){
 }
 
 
+
 //essa main aqui embaixo é para ser compativel com a entrada de txt do gerador de caso teste. servindo pra testar o codigo
 //uma diferença de logica dessa pra original é que essa roda mais de um caso teste de uma vez. a original só faz uma operaçao e acaba
 //depois de rodar aqui dá pra olhar o arquivo de saída esperada e comparar
 //só usando o make / make run / make clean funciona tudo legal. 
+
 /*
 int main(void) {
     FILE *input_file = NULL;
     int teste = 1;
 
     // Abre o arquivo de casos de teste para leitura
-    input_file = fopen("test_cases.txt", "r");
+    input_file = fopen("1.in", "r");
     if (input_file == NULL) {
         printf("Erro ao abrir o arquivo de casos de teste.\n");
         return 1;
