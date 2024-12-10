@@ -1,6 +1,6 @@
 #ifndef LISTA_H
 	#define LISTA_H
-    #define TAM_MAX 200
+    #define TAM_MAX 1000
 
     #include <stdbool.h>
 
