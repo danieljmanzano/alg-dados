@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include "arvore.h"
 
-#define FILHO_ESQ 0
-#define FILHO_DIR 1
-
 typedef struct no_{
     struct no_ *esq, *dir;
     int chave, fb; //fb é o meu fator balanceamento do nó na arvore
@@ -12,15 +9,13 @@ typedef struct no_{
 
 typedef struct arvore_{
     NO *raiz;
-    int profundidade;
 }ARVORE;
  
 ARVORE *arvore_criar(void){
     ARVORE *t = malloc(sizeof(ARVORE));
-    if(t != NULL){
-        t->profundidade = -1; //uma arvore inicializada ainda nao tem nenhum nó, o que faz dela ter profundidade -1
+    if(t != NULL)
         t->raiz = NULL;
-    }
+    
     return t;
 }
 
@@ -42,13 +37,6 @@ int altura(NO *no){
     int alt_dir = altura(no->dir);
     
     return 1 + (alt_esq > alt_dir ? alt_esq : alt_dir); //vai pegar a maior altura (altura da maior subarvore) com essa condiçao
-}
-
-int arvore_profundidade(NO *no){ //serve pra ver de subarvores tambem, só passar o nó que quiser analisar
-    if(!no) return -1;
-    int e = arvore_profundidade(no->esq);
-    int d = arvore_profundidade(no->dir);
-    return((e > d) ? e : d) + 1;
 }
 
 /*funçoes juntas*/
@@ -95,8 +83,7 @@ NO *balancear(NO *raiz){
     }
     
     return raiz;
-} //talvez seja meio obvio pra onde roda, mas por desencargo de consciencia deixei anotado ali
-
+} 
 /*--------------*/
 
 
@@ -133,7 +120,7 @@ bool arvore_inserir(ARVORE *t, int chave){
 /*--------------*/
 
 /*funções juntas*/
-NO *acha_menor_valor(NO* no){ //função auxiliar pra achar menor valor presente numa subarvore
+NO *acha_menor_valor(NO* no){ //função auxiliar pra achar menor valor presente numa subarvore (uso para remoção)
     NO* atual = no;
     while(atual && atual->esq != NULL)
         atual = atual->esq;
@@ -169,7 +156,7 @@ NO *arvore_remover_no(NO *raiz, int chave){
         raiz->dir = arvore_remover_no(raiz->dir, temp->chave);
     }
     
-    if(!raiz) //pra caso em que a arvore tinha só um nó (nao precisa balancear ali embaixo)
+    if(!raiz) //pra caso em que a arvore tinha só um nó (para nao precisar balancear ali embaixo)
         return raiz;
     
     return balancear(raiz); //rebalancear em função do nó atual
@@ -181,16 +168,6 @@ bool arvore_remover(ARVORE *t, int chave) {
     return true;
 }
 /*--------------*/
-
-
-void verificar_altura(NO *raiz){ //função pra debugar, show da bola
-    if(!raiz) return;
-    
-    printf("nó %d: altura = %d, fb = %d\n", raiz->chave, altura(raiz), raiz->fb);
-    
-    verificar_altura(raiz->esq);
-    verificar_altura(raiz->dir);
-} //teoricamente nao é pra usar em nenhum momento, mas é bom pra se der ruim aqui e eu tenho que ver (acontece bastante...)
 
 
 /*funçoes juntas*/
@@ -274,12 +251,12 @@ void arvore_uniao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore){
         copia_arvore(t2->raiz, nova_arvore);
         return;
     }
-    if(!t2){ //mesma logica de cima
+    if(!t2){ //mesma logica de cima aplicada para a t2
         copia_arvore(t1->raiz, nova_arvore);
         return;
     }
 
-    //caso as duas existam, basicamente só vai copiar as duas na nova (o que resulta, basicamente, na uniao)
+    //caso as duas existam, vai copiar as duas na nova (o que resulta, basicamente, na uniao)
     copia_arvore(t1->raiz, nova_arvore);
     copia_arvore(t2->raiz, nova_arvore);
 
@@ -289,13 +266,13 @@ void arvore_uniao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore){
 
 
 /*funçoes juntas*/
-void percorre_interseccao(NO *raiz, ARVORE *t2, ARVORE *nova_arvore){ //basicamente percorre em ordem uma arvore procurando se o nó atual ta em algum lugar na outra
+void percorre_interseccao(NO *raiz, ARVORE *t2, ARVORE *nova_arvore){ 
     if(!raiz) return;
     
     percorre_interseccao(raiz->esq, t2, nova_arvore);
     
-    if(arvore_pertence(t2, raiz->chave)) //ve se ta na segunda arvore
-        arvore_inserir(nova_arvore, raiz->chave);
+    if(arvore_pertence(t2, raiz->chave)) //analisa se a chave da raiz está na t2
+        arvore_inserir(nova_arvore, raiz->chave); //caso esteja, quer dizer que a chave está nas duas árvores e deve ser inserida na intersecção
     
     percorre_interseccao(raiz->dir, t2, nova_arvore);
 }

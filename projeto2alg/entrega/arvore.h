@@ -1,6 +1,5 @@
 #ifndef ARVORE_H
     #define ARVORE_H
-    #define TAM_MAX 200
 
     #include <stdbool.h>
 

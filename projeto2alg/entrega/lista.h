@@ -1,7 +1,6 @@
 #ifndef LISTA_H
 	#define LISTA_H
     #define TAM_MAX 200
-    #define ERRO -8763521
 
     #include <stdbool.h>
 
