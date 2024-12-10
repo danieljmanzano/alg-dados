@@ -3,7 +3,7 @@
 #include "arvore.h"
 
 typedef struct no_{
-    struct no_ *esq, *dir, *pai;
+    struct no_ *esq, *dir;
     int chave, fb; //fb é o meu fator balanceamento do nó na arvore
 }NO;
 
@@ -27,7 +27,6 @@ NO *no_criar(int chave){
     no->fb = 0;
     no->esq = NULL;
     no->dir = NULL;
-    no->pai = NULL;
     return no; 
 }
 
@@ -40,64 +39,27 @@ int altura(NO *no){
     return 1 + (alt_esq > alt_dir ? alt_esq : alt_dir); //vai pegar a maior altura (altura da maior subarvore) com essa condiçao
 }
 
-int arvore_profundidade(NO *no){ //serve pra ver de subarvores tambem, só passar o nó que quiser analisar
-    if(!no) return -1;
-    int e = arvore_profundidade(no->esq);
-    int d = arvore_profundidade(no->dir);
-    return((e > d) ? e : d) + 1;
-}
-
 /*funçoes juntas*/
 /*rotações simples e balanceamento*/
-NO *rotacaoDireita(NO *desbalanceado){
+NO *rotacaoDireita(NO *desbalanceado){ 
     NO *novaRaiz = desbalanceado->esq;
-    
-    if(novaRaiz->dir) //atualiza filho direito da nova raiz se existir
-        novaRaiz->dir->pai = desbalanceado;
-    
     desbalanceado->esq = novaRaiz->dir;
-    
-    if(desbalanceado->pai){ //ajuste dos ponteiros pai caso o desbalanceado tinha um nó pai
-        if(desbalanceado->pai->esq == desbalanceado) 
-            desbalanceado->pai->esq = novaRaiz;
-        else 
-            desbalanceado->pai->dir = novaRaiz;
-    }
-        
     novaRaiz->dir = desbalanceado;
-    novaRaiz->pai = desbalanceado->pai;
-    desbalanceado->pai = novaRaiz;
-    
 
-    desbalanceado->fb = altura(desbalanceado->esq) - altura(desbalanceado->dir);
+    desbalanceado->fb = altura(desbalanceado->esq) - altura(desbalanceado->dir); //acerta o fator balanceamento novo
     novaRaiz->fb = altura(novaRaiz->esq) - altura(novaRaiz->dir);
-    
+
     return novaRaiz;
 }
 
-NO *rotacaoEsquerda(NO *desbalanceado) {
+NO *rotacaoEsquerda(NO *desbalanceado){ //mesma coisa de cima mas pra esquerda
     NO *novaRaiz = desbalanceado->dir;
-    
-    if (novaRaiz->esq) //atualiza filho esquerdo da nova raiz se existir
-        novaRaiz->esq->pai = desbalanceado;
-    
     desbalanceado->dir = novaRaiz->esq;
-    
-    if(desbalanceado->pai){ //ajuste dos ponteiros pai caso o desbalanceado tinha um nó pai
-        if(desbalanceado->pai->esq == desbalanceado) 
-            desbalanceado->pai->esq = novaRaiz;
-        else 
-            desbalanceado->pai->dir = novaRaiz;
-    }
-    
     novaRaiz->esq = desbalanceado;
-    novaRaiz->pai = desbalanceado->pai;
-    desbalanceado->pai = novaRaiz;
-    
 
     desbalanceado->fb = altura(desbalanceado->esq) - altura(desbalanceado->dir);
     novaRaiz->fb = altura(novaRaiz->esq) - altura(novaRaiz->dir);
-    
+
     return novaRaiz;
 }
 
@@ -126,26 +88,17 @@ NO *balancear(NO *raiz){
 
 
 /*funçoes juntas*/
-NO *arvore_inserir_no(NO *raiz, NO *novo_no){
+NO *arvore_inserir_no(NO *raiz, NO *novo_no) {
+    if(!raiz)
+        return novo_no; //chegou às folhas: local de inserção
 
-    if(!raiz){ //achou o local de inserção
-        novo_no->pai = NULL; 
-        return novo_no;        
-    }
-
-    else if(novo_no->chave < raiz->chave){
+    else if(novo_no->chave < raiz->chave)
         raiz->esq = arvore_inserir_no(raiz->esq, novo_no);
-        if(raiz->esq) //caso tenha um filho esquerdo, devo colocar seu "pai" como o nó atual
-            raiz->esq->pai = raiz;
-    }
 
-    else if(novo_no->chave > raiz->chave){
+    else if(novo_no->chave > raiz->chave)
         raiz->dir = arvore_inserir_no(raiz->dir, novo_no);
-        if(raiz->dir) //mesma lógica de cima para um filho direito
-            raiz->dir->pai = raiz;
-    }
 
-    else if(novo_no->chave == raiz->chave){ //caso o nó que eu quero inserir ja esteja alocado na arvore, desaloco ele antes de voltar
+    else if(novo_no->chave == raiz->chave){ //caso o nó que eu quero inserir ja esteja alocado na arvore, libero ele antes de voltar
         free(novo_no);
         novo_no = NULL;
         return raiz;
@@ -166,9 +119,8 @@ bool arvore_inserir(ARVORE *t, int chave){
 }
 /*--------------*/
 
-
 /*funções juntas*/
-NO *acha_menor_valor(NO* no){ //função auxiliar pra achar menor valor presente numa subarvore
+NO *acha_menor_valor(NO* no){ //função auxiliar pra achar menor valor presente numa subarvore (uso para remoção)
     NO* atual = no;
     while(atual && atual->esq != NULL)
         atual = atual->esq;
@@ -180,45 +132,32 @@ NO *arvore_remover_no(NO *raiz, int chave){
     if(!raiz)
         return raiz;
     
-    if(chave < raiz->chave){
+    if(chave < raiz->chave)
         raiz->esq = arvore_remover_no(raiz->esq, chave);
-        if(raiz->esq) //caso exista um filho esquerdo, devo colocar o campo "pai" dele como o nó atual
-            raiz->esq->pai = raiz;
-    }
-
-    else if(chave > raiz->chave){
+    else if(chave > raiz->chave)
         raiz->dir = arvore_remover_no(raiz->dir, chave);
-        if(raiz->dir) //mesma lógica de cima para um filho direito
-            raiz->dir->pai = raiz;
-    }
+    else{ //caso tenha achado o que é pra remover
 
-    else{ //caso tenha achado o que é para remover
-
-        //pra nó com um filho ou nenhum
+        /*pra nó com um filho ou nenhum*/
         if(!raiz->esq){
             NO *temp = raiz->dir;
-            if(temp)
-                temp->pai = raiz->pai;
-
             free(raiz);
             return temp;
         }
         else if(!raiz->dir){
             NO *temp = raiz->esq;
-            if(temp)
-                temp->pai = raiz->pai;
-
             free(raiz);
             return temp;
         }
         
-        //pra nó com dois filhos
+        /*pra nó com dois filhos*/
         NO *temp = acha_menor_valor(raiz->dir);
         raiz->chave = temp->chave;
         raiz->dir = arvore_remover_no(raiz->dir, temp->chave);
-        if(raiz->dir) //caso exista um filho direito para o nó, arruma o ponteiro pai
-            raiz->dir->pai = raiz;
     }
+    
+    if(!raiz) //pra caso em que a arvore tinha só um nó (para nao precisar balancear ali embaixo)
+        return raiz;
     
     return balancear(raiz); //rebalancear em função do nó atual
 }
@@ -274,11 +213,11 @@ void arvore_imprimir(ARVORE *t){
 }
 /*--------------*/
 
-/*funções juntas*/
-NO *buscabinT(NO *raiz, int chave) {
-    if(!raiz) return NULL;
+
+bool buscabinT(NO *raiz, int chave) {
+    if(!raiz) return false;
     
-    if(chave == raiz->chave) return raiz;
+    if(chave == raiz->chave) return true;
     
     if(chave < raiz->chave)
         return buscabinT(raiz->esq, chave);
@@ -294,93 +233,56 @@ bool arvore_pertence(ARVORE *t, int chave){
 
     else return false;
 }
+
+
+/*funçoes juntas*/
+void copia_arvore(NO *raiz, ARVORE *nova_arvore){ //percorre uma arvore (parte da raiz aqui) e vai inserindo na outra em ordem
+    if(!raiz) return;
+    
+    copia_arvore(raiz->esq, nova_arvore);
+    arvore_inserir(nova_arvore, raiz->chave); 
+    copia_arvore(raiz->dir, nova_arvore);
+}
+
+void arvore_uniao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore){
+    if((!t1 && !t2) || !nova_arvore) return; //caso as duas arvores sejam nulas ou a nova nao está alocada, retorna
+
+    if(!t1){ //caso a t1 seja vazia, a união é só a segunda arvore
+        copia_arvore(t2->raiz, nova_arvore);
+        return;
+    }
+    if(!t2){ //mesma logica de cima aplicada para a t2
+        copia_arvore(t1->raiz, nova_arvore);
+        return;
+    }
+
+    //caso as duas existam, vai copiar as duas na nova (o que resulta, basicamente, na uniao)
+    copia_arvore(t1->raiz, nova_arvore);
+    copia_arvore(t2->raiz, nova_arvore);
+
+    return;
+}
 /*--------------*/
 
 
-NO *proximo_no(NO *no){ //função auxiliar para encontrar o próximo nó imediato a algum (faz isso com ajuda do campo no->pai). uso para união e intersecção
-    if(!no) return NULL;
-
-    if(no->dir){ //caso tenha filho direito, pega o menor desse lado
-        no = no->dir;
-        while(no->esq) no = no->esq;
-        return no;
-    }
-
-    //se não tem filho direito, a saída é procurar a partir dos pais (faz o caminho "de volta" para achar o possível próximo)
-    while(no->pai){
-        if(no->pai->esq == no)  //se o nó atual é o filho esquerdo, retorna o pai
-            return no->pai;
-        
-        no = no->pai;
-    }
-
-    return NULL; //se chegou na raiz sem encontrar, quer dizer que era o "último", nao tinha proximo. retorna nulo
+/*funçoes juntas*/
+void percorre_interseccao(NO *raiz, ARVORE *t2, ARVORE *nova_arvore){ 
+    if(!raiz) return;
+    
+    percorre_interseccao(raiz->esq, t2, nova_arvore);
+    
+    if(arvore_pertence(t2, raiz->chave)) //analisa se a chave da raiz está na t2
+        arvore_inserir(nova_arvore, raiz->chave); //caso esteja, quer dizer que a chave está nas duas árvores e deve ser inserida na intersecção
+    
+    percorre_interseccao(raiz->dir, t2, nova_arvore);
 }
-
-
-void arvore_uniao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore){
-    if((!t1 && !t2) || !nova_arvore) return;
-
-    NO *atual1 = acha_menor_valor(t1->raiz); //pega o menor valor de cada árvore para começar as comparações
-    NO *atual2 = acha_menor_valor(t2->raiz);
-
-    while(atual1 || atual2){ //percorre as arvores simultaneamente
-        if(!atual1){ //se o 1 é nulo, insiro o 2 e ando pra frente
-            arvore_inserir(nova_arvore, atual2->chave);
-            atual2 = proximo_no(atual2);
-            continue;
-        }
-
-        if(!atual2){ //se o 2 é nulo, insiro o 1 e ando pra frente
-            arvore_inserir(nova_arvore, atual1->chave);
-            atual1 = proximo_no(atual1);
-            continue;
-        }
-
-        //compara os valores e insere o menor
-        if(atual1->chave < atual2->chave){
-            arvore_inserir(nova_arvore, atual1->chave);
-            atual1 = proximo_no(atual1);
-        }
-        else if(atual1->chave > atual2->chave){
-            arvore_inserir(nova_arvore, atual2->chave);
-            atual2 = proximo_no(atual2);
-        }
-
-        else { //chaves iguais. insere 1 e anda os dois
-            arvore_inserir(nova_arvore, atual1->chave);
-            atual1 = proximo_no(atual1);
-            atual2 = proximo_no(atual2);
-        }
-    }
-
-    if(!nova_arvore->raiz) printf("união vazia");
-    return;
-}
-
 
 void arvore_interseccao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore) {
     if(!t1 || !t2 || !nova_arvore) return; //se uma das duas é vazia, ja nao tem intersecçao
 
-    NO *atual1 = acha_menor_valor(t1->raiz); //pega o menor valor de cada arvore para começar as comparações
-    NO *atual2 = acha_menor_valor(t2->raiz);
-
-    while(atual1 && atual2){ //percorre as arvores simultaneamente (ambas devem ser não nulas para haver intersecção!)
-
-        if(atual1->chave < atual2->chave) //caso 1 seja menor, anda ele
-            atual1 = proximo_no(atual1);
-        
-        else if(atual1->chave > atual2->chave) //caso 2 seja menor, anda ele
-            atual2 = proximo_no(atual2);
-        
-        else{ //chaves iguais
-            arvore_inserir(nova_arvore, atual1->chave); //insere na intersecção e anda ambos
-            atual1 = proximo_no(atual1);
-            atual2 = proximo_no(atual2);
-        }
-    }
-
+    percorre_interseccao(t1->raiz, t2, nova_arvore);
     if(!nova_arvore->raiz) printf("intersecção vazia");
+
     return;
 }
-
+/*--------------*/
