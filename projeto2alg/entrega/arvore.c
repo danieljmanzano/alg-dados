@@ -260,6 +260,7 @@ void arvore_uniao(ARVORE *t1, ARVORE *t2, ARVORE *nova_arvore){
     copia_arvore(t1->raiz, nova_arvore);
     copia_arvore(t2->raiz, nova_arvore);
 
+    if(!nova_arvore->raiz) printf("união vazia");
     return;
 }
 /*--------------*/

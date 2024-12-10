@@ -145,7 +145,7 @@ void generate_test_cases(int num_cases) {
     for (int caso = 1; caso <= num_cases; caso++) {
         // Escolhe tipo de estrutura 
         int tipo = rand() % 2;
-        tipo = 1;
+        tipo = 0;
         // Gera tamanhos dos conjuntos
         int n_a = rand() % 50 + 1; // 1 a 30 elementos
         int n_b = rand() % 50 + 1; // 1 a 30 elementos
@@ -176,7 +176,7 @@ void generate_test_cases(int num_cases) {
             fprintf(test_file, "%d ", conjunto_b[i]);
         }
         fprintf(test_file, "\n");
-        op = 4;
+        
         // Gera entrada e saída para cada operação
         switch (op) {
             case 1: { // Pertence
