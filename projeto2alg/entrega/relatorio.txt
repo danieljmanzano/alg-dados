@@ -24,6 +24,11 @@ Na análise de complexidade das funções foi mantida a constante que multiplica
             -decremento do índice
     -lista_remover: 4*O(N)
         -N iterações para shiftar os elementos
+    -lista_imprimir: 3*O(N)
+        -for de N iterações
+            -1 verificação para continuar
+            -1 incremento do contador
+            -1 printf
     -buscabinL:5*O(logN)
         -logN chamadas recursivas
             -divisão
@@ -71,6 +76,11 @@ Para as funções que utilizam outra auxiliar foi calculada diretamente na princ
         -1.44*logN chamadas recursivas
             -2 if
             -1 atribuição de valor
+    -imprimir_em_ordem: (2+1)*O(N)
+        -chamada recursiva para cada no
+            -verifica se existe
+            -printa
+            -após passar por todos os nos que existem, verifica para os filhos do último nível se existem, mas não printa(N+1)
     -arvore_pertence: 2*1.44(logN)
         -144*logN chamadas recursivas
             -2 if garantidos
