@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include "set.h"
 
-//segundo projeto de alg
+/*Alunos:
+Artur Kenzo Obara Kawazoe - 15652663
+Daniel Jorge Manzano - 15446861*/
 
 /*Implementar o TAD Conjunto de modo que o usuário possa escolher entre 2 a
 Estruturas de Dados que implementam o conjunto. Ou seja, o TAD Conjunto deve ser
