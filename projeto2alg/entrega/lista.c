@@ -4,20 +4,23 @@
 
 struct lista_{
     int *lista;
-    int tam;
-};
+    int tam, capacidade; //o campo 'capacidade' da lista nos ajuda a poupar operações de realloc(). 
+};                       //sempre vamos realocar de 50 em 50, assim, usaremos esse espaço para fazer esse controle
 
-int buscabinL(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa no .h, então faço o protótipo aqui 
+
+
+int buscabinL(LISTA *l, int i, int f, int busca, int *achou); //como a função não está no .h, faço o protótipo aqui
 
 
 LISTA *lista_criar(){
     LISTA *l = malloc(sizeof(LISTA));
-    if(!l) return NULL; //erro de alocação
+    if(!l) return NULL;
 
     l->lista = NULL;
     l->tam = 0;
+    l->capacidade = 0;
     return l;
-}   
+}
 
 
 void lista_apagar(LISTA **l){
@@ -36,15 +39,21 @@ bool lista_inserir(LISTA *l, int chave){
 
     int flag = 0;
     int i = buscabinL(l, 0, l->tam - 1, chave, &flag); 
-    if(flag) return false; //já está na lista, nao insere
+    if(flag) return false;
 
-    l->tam++; //incremento o tamanho da lista
-    l->lista = realloc(l->lista, sizeof(int) * l->tam); //realoco para o novo tamanho
+    //checa se a capacidade precisa ser maior (ou seja, se precisa realocar)
+    if(l->tam >= l->capacidade){
+        l->capacidade += 50;
+        l->lista = realloc(l->lista, sizeof(int) * l->capacidade);
+        if(!l->lista) return false;
+    }
+
+    l->tam++;
     for(int j = l->tam - 1; j > i; j--)
-        l->lista[j] = l->lista[j - 1]; //desloca todas posições para direita a partir da que eu quero inserir
+        l->lista[j] = l->lista[j - 1];
 
-    l->lista[i] = chave; //insiro na posição correta
-    return true; 
+    l->lista[i] = chave;
+    return true;
 }
 
 
@@ -53,17 +62,21 @@ bool lista_remover(LISTA *l, int chave){
 
     int flag = 0;
     int i = buscabinL(l, 0, l->tam - 1, chave, &flag);
-
-    if(!flag) return false; //caso nao tenha achado
+    if(!flag) return false;
 
     for(int j = i; j < l->tam - 1; j++)
         l->lista[j] = l->lista[j + 1];
     
     l->tam--;
-    l->lista = realloc(l->lista, sizeof(int) * l->tam);
+    
+    //realoca para um tamanho menor caso a capacidade seja maior (em 50) que o tamanho sendo usado
+    if(l->capacidade - l->tam >= 50){
+        l->capacidade = ((l->tam + 49) / 50) * 50; 
+        l->lista = realloc(l->lista, sizeof(int) * l->capacidade);
+    }
 
     return true;
-}   
+}
 
 
 void lista_imprimir(LISTA *l){

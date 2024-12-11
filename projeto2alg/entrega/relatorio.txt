@@ -1,0 +1,93 @@
+Alunos:
+Artur Kenzo Obara Kawazoe - 15652663
+Daniel Jorge Manzano - 15446861
+
+Na análise de complexidade das funções foi mantida a constante que multiplica a função dominante. N é a quantidade de elementos. Quando há dois conjuntos de elementos, N representa a quantidade de um deles(A) e M do outro(B). Cada operação matemática, associação de valor, if, verificação de for ou while e alocação de memória foi considerada como uma operação.
+
+#Lista sequencial
+    -lista_criar: 5*O(1)
+        -alocação e inicialização do ponteiro(2)
+        -verificação da alocação
+        -seta o ponteiro do array para NULL
+        -inicialização do tam
+    -lista_apagar: 5*O(1)
+        -verifica que a lista existe
+        -verifica que o array existe
+        -seta o array para NULL
+        -free na lista
+        -seta lista para NULL
+    -lista_inserir: 4*O(N)
+        -N iterações para shiftar os elementos
+            -verifica se ainda está dentro da lista
+            -calculo do índice - 1
+            -atribui o valor
+            -decremento do índice
+    -lista_remover: 4*O(N)
+        -N iterações para shiftar os elementos
+    -buscabinL:5*O(logN)
+        -logN chamadas recursivas
+            -divisão
+            -soma
+            -3 if
+    -lista_pertence: 5*O(logN)
+        -buscabinL
+    -lista_uniao: 9*O(N+M)
+        -N + M iterações do loop
+            -3 verificações por loop
+            -1 incremento de índice de acesso de A ou B
+            -incremento do tamanho e indice de acesso da lista de uniao(2)
+            -1 atribuição de valor
+            -3 if
+    -lista_interseccao: 9*O(N+M)
+        -N + M iterações do loop
+            -2 verificações por loop
+            -2 if
+            -incremento do índice de acesso de A ou B
+
+
+
+#AVl
+Para as funções que utilizam outra auxiliar foi calculada diretamente na principal
+
+    -arvore_criar: 4*O(1)
+        -alocação 
+        -verificação de alocação
+        -inicialização da profundidade
+        -seta raiz para NULL
+    -no_criar: 6*O(1)
+        -alocação
+        -verificação de alocação
+        -inicialização dos campos(4)
+    -arvore_apagar: 3*O(N)
+        -N chamadas(uma por nó)
+            -verifica se existe
+            -free
+            -set para NULL
+    -arvore_inserir: 2*1.44(logN)
+        -o valor é dado, por cálculos matemáticos, da profundidade máxima em uma árvore AVL, de 1.44*logN
+        -144*logN chamadas recursivas
+            -2 if garantidos a serem verificados(é difícil determinar o formato exato do pior caso de AVL para busca)
+    -arvore_remover: 3*1.44(logN)
+        -1.44*logN chamadas recursivas
+            -2 if
+            -1 atribuição de valor
+    -arvore_pertence: 2*1.44(logN)
+        -144*logN chamadas recursivas
+            -2 if garantidos
+    -arvore_uniao: 2*1.44*O((M+N)log(M+N))
+        -considerar que os conjuntos são completamente diferentes(pior caso)
+        -ambas árvores são percorridas em sua interidade
+            -para cada elemento é realizada uma inserção
+
+    -arvore_interseccao: 2*1.44*O(NlogN)
+        -considerar que os conjuntos são idênticos(pior caso)
+        -ambas árvores são percorridas em sua interiadade
+            -para cada elemento é feita um inserção
+
+
+#Conclusão
+    A análise das complexidades das estruturas mostra as vantagens de cada uma. A lista apresentou melhor desempenho nas operações do conjunto, como não foi mencionada a necessidade de lidar com memória limitada, foi escolhida. Por outro lado, para as operações básicas, a AVL apresenta melhor desempenho, perdendo eficiência nas operações do conjunto, apresentando uso melhor de memória.
+
+
+
+
