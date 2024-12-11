@@ -7,7 +7,8 @@ struct lista_{
     int tam;
 };
 
-int buscabinL(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa no .h, então faço o protótipo aqui mesmo
+int buscabinL(LISTA *l, int i, int f, int busca, int *achou); //não coloco essa no .h, então faço o protótipo aqui 
+
 
 LISTA *lista_criar(){
     LISTA *l = malloc(sizeof(LISTA));
@@ -17,6 +18,7 @@ LISTA *lista_criar(){
     l->tam = 0;
     return l;
 }   
+
 
 void lista_apagar(LISTA **l){
     if(*l == NULL) return; //caso a lista nao exista, nao há como apagar
@@ -28,21 +30,23 @@ void lista_apagar(LISTA **l){
     return;
 }
 
+
 bool lista_inserir(LISTA *l, int chave){
     if(l == NULL || l->tam == TAM_MAX) return false;
 
     int flag = 0;
     int i = buscabinL(l, 0, l->tam - 1, chave, &flag); 
-    if(flag) return false; //ja tem ele na lista, nao insere
+    if(flag) return false; //já está na lista, nao insere
 
     l->tam++; //incremento o tamanho da lista
     l->lista = realloc(l->lista, sizeof(int) * l->tam); //realoco para o novo tamanho
     for(int j = l->tam - 1; j > i; j--)
         l->lista[j] = l->lista[j - 1]; //desloca todas posições para direita a partir da que eu quero inserir
 
-    l->lista[i] = chave;
+    l->lista[i] = chave; //insiro na posição correta
     return true; 
 }
+
 
 bool lista_remover(LISTA *l, int chave){
     if(l == NULL || l->tam == 0) return false;
@@ -61,6 +65,7 @@ bool lista_remover(LISTA *l, int chave){
     return true;
 }   
 
+
 void lista_imprimir(LISTA *l){
     if(!l) return;
 
@@ -71,16 +76,17 @@ void lista_imprimir(LISTA *l){
     return;
 }
 
-/*como tenho que usar busca binaria tanto para insercao como remoçao, uso a flag "achou" para casos em que preciso buscar e remover, enquanto ignoro para quando quero apenas inserir*/
+
+//como tenho que usar busca binaria tanto para insercao como remoçao, uso a flag "achou" para casos em que preciso saber se o número está ou não na lista
 int buscabinL(LISTA *l, int i, int f, int busca, int *achou){ //fora o comentário acima, a função é uma busca binária comum
     int m = (i + f) / 2;
 
     if(i > f){ //caso nao tenha achado
-        *achou = 0; //flag = 0
+        *achou = 0; //minha flag retorna 0
         return i; //retorna a posição onde deve ser inserido
     }
     if(l->lista[m] == busca){ //caso tenha achado
-        *achou = 1; //flag = 1
+        *achou = 1; //minha flag retorna 1
         return m; //retorna a posição onde se encontra
     }
 
@@ -90,10 +96,11 @@ int buscabinL(LISTA *l, int i, int f, int busca, int *achou){ //fora o comentár
         return buscabinL(l, i, m - 1, busca, achou);
     }
     
-    return -1; //a função não chega aqui, mas para evitar warning fica esse retorno
+    return -1; 
 }
 
-bool lista_pertence(LISTA *l, int chave){
+
+bool lista_pertence(LISTA *l, int chave){ //função para a operação set_pertence. funciona com base na busca binária em lista sequencial
     if(l == NULL || l->tam == 0) return false;
 
     int flag = 0;
@@ -103,24 +110,25 @@ bool lista_pertence(LISTA *l, int chave){
     return false;
 }
 
+
 void lista_uniao(LISTA *l1, LISTA *l2, LISTA *uniao){
-    uniao->lista = malloc(sizeof(int) * (l1->tam + l2->tam));
+    uniao->lista = malloc(sizeof(int) * (l1->tam + l2->tam)); //aloco a lista com o tamanho máximo que a união pode assumir (tamanho de l1 + tamanho de l2)
     if(!uniao || !uniao->lista) return;
 
     int i = 0, j = 0, cont = 0;
-    while(i < l1->tam && j < l2->tam && uniao->tam < TAM_MAX){ //pego sempre o menor numero das duas listas a cada iteração e avanço posição no de onde peguei
-
-        if(l1->lista[i] < l2->lista[j]){
+    while(i < l1->tam && j < l2->tam && uniao->tam < TAM_MAX){ 
+        //procuro sempre o menor entre l1 e l2, insiro na união e avanço uma posição onde peguei
+        if(l1->lista[i] < l2->lista[j]){ 
             uniao->lista[cont++] = l1->lista[i++];
             uniao->tam++;
         }
-            
         else if(l1->lista[i] > l2->lista[j]){
             uniao->lista[cont++] = l2->lista[j++];
             uniao->tam++;
         }
 
-        else{ //aqui, caso os numeros sejam iguais, adiciono só uma vez (e avanço as duas listas)
+        //aqui, caso os numeros sejam iguais (l1->lista[i] == l2->lista[j]), adiciono só uma vez (e avanço as duas listas)
+        else{ 
             uniao->lista[cont++] = l1->lista[i++];
             uniao->tam++;
             j++;
@@ -142,56 +150,33 @@ void lista_uniao(LISTA *l1, LISTA *l2, LISTA *uniao){
         exit (1);
     }
 
-    uniao->lista = realloc(uniao->lista, sizeof(int) * uniao->tam);
+    uniao->lista = realloc(uniao->lista, sizeof(int) * uniao->tam); //realoco para o tamanho final
     if(cont == 0) printf("união vazia");
     return;
 }
+
 
 void lista_interseccao(LISTA *l1, LISTA *l2, LISTA *inter){
     inter->lista = malloc(sizeof(int) * (l1->tam < l2->tam ? l1->tam : l2->tam)); //realoco a intersecção pro tamanho da menor lista
     if(!inter || !inter->lista) return;
 
     int i = 0, j = 0, cont = 0;
-    while(i < l1->tam && j < l2->tam){ //avanço uma posiçao sempre na lista com o menor numero
+    while(i < l1->tam && j < l2->tam){ 
+        //avanço uma posiçao sempre na lista com o menor número dentre as posições ('i' e 'j') analisadas
         if(l1->lista[i] < l2->lista[j]) 
             i++;
-            
         else if(l1->lista[i] > l2->lista[j])
             j++;
 
-        else{ //quando encontro iguais, coloco na intersecçao
+        //quando encontro iguais, coloco na intersecçao e avanço em ambas as listas
+        else{
             inter->lista[cont++] = l1->lista[i++];
             inter->tam++;
             j++;
         }
     }
 
-    inter->lista = realloc(inter->lista, sizeof(int) * inter->tam);
+    inter->lista = realloc(inter->lista, sizeof(int) * inter->tam); //realoco para o tamanho final
     if(cont == 0) printf("intersecção vazia");
     return;
 }
-/*
-int main(void){
-    LISTA *l = lista_criar();
-    lista_inserir(l, 1);
-    lista_inserir(l, 2);
-    lista_inserir(l, 3);
-    lista_inserir(l, 14);
-    lista_inserir(l, 1);
-    lista_imprimir(l);
-    lista_remover(l, 14);
-    lista_imprimir(l);
-    lista_inserir(l, 128);
-    lista_inserir(l, 12937);
-    lista_imprimir(l);
-    LISTA *l2 = lista_criar();
-    lista_inserir(l2, 3);
-    lista_inserir(l2, 1);
-    lista_inserir(l2, 14);
-    lista_inserir(l2, 312123);
-    LISTA *inter = lista_criar();
-    lista_interseccao(l, l2, inter);
-    lista_imprimir(inter);
-    printf("oi\n");
-}
-*/
